@@ -1,0 +1,21 @@
+{
+  "modinfoversion": 2,
+  "modlist": [{
+    "modid": "drceph.horseplay",
+    "name": "Horseplay",
+    "description": "Tools for horses",
+    "version": "0.001",
+    "mcversion": "1.6.2",
+    "url": "https://github.com/drceph/horseplay",
+    "updateUrl": "",
+    "authors": [ "DrCeph" ],
+    "credits": "",
+    "logoFile": "",
+    "screenshots": [],
+    "parent": "",
+    "requiredMods": [ "Forge" ],
+    "dependencies": [ "Railcraft" ],
+    "dependants": [],
+    "useDependencyInformation": "true"
+  }]
+}

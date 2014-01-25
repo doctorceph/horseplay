@@ -1,0 +1,15 @@
+/assets/forge/*
+/cpw/*
+/net/*
+
+/ibxm/*
+/paulscode/*
+
+/forge_logo.png
+/deobfuscation_data-1.6.4.lzma
+/mcpmod.info
+/Start.java
+
+/*.cfg~
+/*.cfg
+/*.properties
