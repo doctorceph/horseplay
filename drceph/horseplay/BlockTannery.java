@@ -1,6 +1,7 @@
 package drceph.horseplay;
 
 import java.util.List;
+import java.util.Random;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -10,6 +11,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
+import net.minecraft.item.Item;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Icon;
 import net.minecraft.world.World;
@@ -35,9 +37,9 @@ public class BlockTannery extends Block {
 		this.setHardness(5F);
 		this.setUnlocalizedName("leatherTannery");
 		this.setStepSound(Block.soundMetalFootstep);
-		this.setCreativeTab(CreativeTabs.tabBlock);
 	}
-
+	
+	
     @SideOnly(Side.CLIENT)
 
     /**
@@ -88,7 +90,8 @@ public class BlockTannery extends Block {
     @SideOnly(Side.CLIENT)
     public static Icon getTanneryIcon(String par0Str)
     {
-        return par0Str.equals("inner") ? ((BlockTannery)(GameRegistry.findBlock("drceph.horseplay", "leatherTannery"))).tanneryInnerIcon : null;
+    	BlockTannery blockTannery = (BlockTannery)(GameRegistry.findBlock("drceph.horseplay", "leatherTannery"));
+        return par0Str.equals("inner") ? blockTannery.tanneryInnerIcon : (par0Str.equals("bottom") ? blockTannery.tanneryBottomIcon : null);
     }
     
     /**
@@ -115,5 +118,14 @@ public class BlockTannery extends Block {
     public int getRenderType() {
     	return this.blockRenderId;
     }
+    
+    /**
+     * Returns the ID of the items to drop on destruction.
+     */
+    public int idDropped(int par1, Random par2Random, int par3)
+    {
+        return GameRegistry.findItem("drceph.horseplay", "leatherTanneryItem").itemID;
+    }
 	
+    
 }

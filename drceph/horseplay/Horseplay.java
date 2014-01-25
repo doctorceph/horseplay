@@ -2,7 +2,9 @@ package drceph.horseplay;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemReed;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.oredict.OreDictionary;
@@ -42,6 +44,7 @@ public class Horseplay {
 	private int wellTannedLeatherId = 8945;
 	private int reinforcedTannedLeatherId = 8946;
 	private int horseProfilerId = 8947;
+	private int leatherTanneryItemId = 8948;
 	private int leatherTanneryId = 1600;
 	
 	//Item for access
@@ -49,6 +52,7 @@ public class Horseplay {
 	public static Item wellTannedLeather;
 	public static Item reinforcedTannedLeather;
 	public static Item horseProfiler;
+	public static Item leatherTanneryItem;
 	public static Block leatherTannery;
 	
 	@EventHandler // used in 1.6.2
@@ -65,23 +69,27 @@ public class Horseplay {
 		reinforcedTannedLeatherId = config.getItem(Configuration.CATEGORY_ITEM, "reinforcedTannedLeather", 8946).getInt(8946);
 		horseProfilerId = config.getItem(Configuration.CATEGORY_ITEM, "horseProfiler", 8947).getInt(8947);
 		leatherTanneryId = config.getBlock(Configuration.CATEGORY_BLOCK, "leatherTannery", 1600).getInt(1600);
-		
+		leatherTanneryItemId = config.getItem(Configuration.CATEGORY_ITEM, "leatherTanneryItem", 8948).getInt(8948);
 		
 		lightTannedLeather = new ItemProcessedLeather(lightTannedLeatherId, "lightTannedLeather");
 		wellTannedLeather = new ItemProcessedLeather(wellTannedLeatherId,"wellTannedLeather");
 		reinforcedTannedLeather = new ItemProcessedLeather(reinforcedTannedLeatherId,"reinforcedTannedLeather");
+		
 		horseProfiler = new ItemHorseProfiler(horseProfilerId,"horseProfiler");
-		
-		HorseplayBlockRenderer hbr = new HorseplayBlockRenderer(RenderingRegistry.getNextAvailableRenderId());
-		RenderingRegistry.registerBlockHandler(hbr);
-		
-		leatherTannery = new BlockTannery(leatherTanneryId,hbr.getRenderId());
-		
+	
 		GameRegistry.registerItem(lightTannedLeather, "lightTannedLeather");
 		GameRegistry.registerItem(wellTannedLeather, "wellTannedLeather");
 		GameRegistry.registerItem(reinforcedTannedLeather, "reinforcedTannedLeather");
 		GameRegistry.registerItem(horseProfiler,"horseProfiler");
+
+		HorseplayBlockRenderer hbr = new HorseplayBlockRenderer(RenderingRegistry.getNextAvailableRenderId());
+		RenderingRegistry.registerBlockHandler(hbr);
+		
+		leatherTannery = new BlockTannery(leatherTanneryId,hbr.getRenderId());		
 		GameRegistry.registerBlock(leatherTannery, "leatherTannery");
+		
+		leatherTanneryItem = (new ItemReed(leatherTanneryItemId, leatherTannery)).setUnlocalizedName("leatherTannery").setCreativeTab(CreativeTabs.tabBlock).setTextureName("Horseplay:tannery");
+		GameRegistry.registerItem(leatherTanneryItem, "leatherTanneryItem");
 	}
 
 	@EventHandler // used in 1.6.2
@@ -96,6 +104,7 @@ public class Horseplay {
 		LanguageRegistry.addName(reinforcedTannedLeather, "Reinforced Leather");
 		LanguageRegistry.addName(horseProfiler, "Horse Profiler");
 		LanguageRegistry.addName(leatherTannery, "Leather Tannery");
+		LanguageRegistry.addName(leatherTanneryItem, "Leather Tannery");
 		
 		//Processing recipes
 	    // SMELTING RECIPES ARE TEMPORARY!!!!!!
