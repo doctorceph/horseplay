@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Icon;
 import net.minecraft.world.World;
@@ -38,6 +39,14 @@ public class BlockTannery extends Block {
 		this.setUnlocalizedName("leatherTannery");
 		this.setStepSound(Block.soundMetalFootstep);
 	}
+	
+	@Override
+	public TileEntity createTileEntity(World world, int metadata) {
+		// TODO Auto-generated method stub
+		return new TileEntityTannery();
+	}
+	
+	
 	
 	
     @SideOnly(Side.CLIENT)
