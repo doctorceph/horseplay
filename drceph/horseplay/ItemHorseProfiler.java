@@ -82,9 +82,9 @@ public class ItemHorseProfiler extends Item {
 					playerMP.addChatMessage(horseTypes[horse.getHorseType()]);
 				}
 	
-				playerMP.addChatMessage("Health: "+getHealthBin(health)+" "+health);
-				playerMP.addChatMessage("Run speed: "+getSpeedBin(speed)+" "+speed);
-				playerMP.addChatMessage("Jump height: "+getJumpBin(jump)+" "+jump);
+				playerMP.addChatMessage("Max health: "+getHealthBin(health));
+				playerMP.addChatMessage("Run speed: "+getSpeedBin(speed));
+				playerMP.addChatMessage("Jump height: "+getJumpBin(jump));
 				
 			} else {
 				playerMP.addChatMessage("Sugar required to power Horse Profiler");
