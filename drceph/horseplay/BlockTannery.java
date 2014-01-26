@@ -168,6 +168,7 @@ public class BlockTannery extends Block implements ITileEntityProvider {
     		ItemStack item = player.getCurrentEquippedItem();
     		
     		System.out.println("Is filled container: "+FluidContainerRegistry.isFilledContainer(item));
+    		System.out.println(FluidContainerRegistry.getFluidForFilledItem(item).getFluid().getLocalizedName());
     		
     		if (isWaterContainer) System.out.println("clicked TET with WADDA!");
     	}
