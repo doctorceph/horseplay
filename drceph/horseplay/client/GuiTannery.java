@@ -3,12 +3,15 @@ package drceph.horseplay.client;
 import org.lwjgl.opengl.GL11;
 
 import drceph.horseplay.ContainerTannery;
+import drceph.horseplay.TanneryLiquidReagent;
 import drceph.horseplay.TileEntityTannery;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.util.Icon;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.FluidRegistry;
 
 public class GuiTannery extends GuiContainer {
 
@@ -33,9 +36,18 @@ public class GuiTannery extends GuiContainer {
         int y = (height - ySize) / 2;
         drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
 
-        
+        //liquid
+        if (tileEntity.reagent != null) {
+        	double ratio = tileEntity.MAX_VOLUME / 40.0;
+            int scaled_volume = (int) Math.round(tileEntity.volume / ratio);
+
+            drawTexturedModalRect(x+13, y+18+40-scaled_volume, 192+(16*tileEntity.reagent.getOffset()), 0, 16, scaled_volume);
+            drawTexturedModalRect(x+13, y+18, 176, 0, 16, 39);
+        }
         
 	}
+	
+	 
 	
 	@Override
     public void drawCenteredString(FontRenderer par1FontRenderer,

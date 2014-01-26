@@ -16,16 +16,19 @@ public class ContainerTannery extends Container {
 	private EntityPlayer invokingPlayer;
 	private int lastVolume = 0;
 	private int lastFluidId = 0;
-
+	private int lastProgress = 0;
 
 	public ContainerTannery(IInventory playerInventory, TileEntityTannery tileEntity) {
 		this.tileEntity = tileEntity;
 		this.invokingPlayer = ((InventoryPlayer) playerInventory).player;
 		layoutContainer(playerInventory,tileEntity);
 	}
+	
+	
 
 	private void layoutContainer(IInventory playerInventory, IInventory inventory) {
-		addSlotToContainer(new Slot(inventory, 0, 22, 36));
+		addSlotToContainer(new Slot(inventory, 0, 39, 41));
+		addSlotToContainer(new Slot(inventory, 1, 146, 41));
 		for (int inventoryRow = 0; inventoryRow < 3; inventoryRow++)
 		{
 			for (int inventoryColumn = 0; inventoryColumn < 9; inventoryColumn++)
@@ -51,7 +54,8 @@ public class ContainerTannery extends Container {
 		super.addCraftingToCrafters(crafter);
 
 		crafter.sendProgressBarUpdate(this, 0, this.tileEntity.volume);
-		crafter.sendProgressBarUpdate(this, 1, this.tileEntity.reagent.getReagentId());
+		crafter.sendProgressBarUpdate(this, 1, this.tileEntity.getCurrentFluidId());
+		crafter.sendProgressBarUpdate(this, 2, this.tileEntity.runProgress);
 	}
 
 	@Override
@@ -62,13 +66,17 @@ public class ContainerTannery extends Container {
 			if (this.lastVolume != this.tileEntity.volume) {
 				crafter.sendProgressBarUpdate(this, 0, this.tileEntity.volume);
 			}
-			if (this.lastFluidId != this.tileEntity.reagent.getReagentId()) {
-				crafter.sendProgressBarUpdate(this, 1, this.tileEntity.reagent.getReagentId());
+			if (this.lastFluidId != this.tileEntity.getCurrentFluidId()) {
+				crafter.sendProgressBarUpdate(this, 1, this.tileEntity.getCurrentFluidId());
+			}
+			if (this.lastProgress != this.tileEntity.runProgress) {
+				crafter.sendProgressBarUpdate(this, 0, this.tileEntity.runProgress);
 			}
 		}
 
 		this.lastVolume = this.tileEntity.volume;
-		this.lastFluidId = this.tileEntity.reagent.getReagentId();
+		this.lastFluidId = this.tileEntity.getCurrentFluidId();
+		this.lastProgress = this.tileEntity.runProgress;
 	}
 	
 	@Override
@@ -89,6 +97,9 @@ public class ContainerTannery extends Container {
             if (par1 == 1) {
                     this.tileEntity.setCurrentReagent(par2);
             }
+            if (par1 == 2) {
+            		this.tileEntity.runProgress = par2;
+            }
     }
 
 
@@ -97,6 +108,8 @@ public class ContainerTannery extends Container {
 		// TODO Auto-generated method stub
 		return tileEntity.isUseableByPlayer(entityplayer);
 	}
+	
+	
 
 	@Override
     public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int slot) {
@@ -111,8 +124,8 @@ public class ContainerTannery extends Container {
 
             //merges the item into player inventory since its in the tileEntity
             //this assumes only 1 slot, for inventories with > 1 slots, check out the Chest Container.
-            if (slot == 0) {
-                    if (!mergeItemStack(stackInSlot, 1,
+            if (slot <= 1) {
+                    if (!mergeItemStack(stackInSlot, 2,
                                     inventorySlots.size(), true)) {
                             return null;
                     }
@@ -130,5 +143,12 @@ public class ContainerTannery extends Container {
 
     return stack;
     }
+	
+	@Override
+	public ItemStack slotClick(int par1, int par2, int par3,
+			EntityPlayer par4EntityPlayer) {
+		// TODO Auto-generated method stub
+		return super.slotClick(par1, par2, par3, par4EntityPlayer);
+	}
 	
 }

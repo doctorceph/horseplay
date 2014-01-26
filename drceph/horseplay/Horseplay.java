@@ -139,9 +139,13 @@ public class Horseplay {
 		LanguageRegistry.addName(sulfuricAcidBucket,"Sulfuric Acid Bucket");
 		
 		//Liquid Handling
-		new TanneryLiquidReagent(FluidRegistry.getFluidStack("water", FluidContainerRegistry.BUCKET_VOLUME), 1);
+		if (FluidRegistry.getFluidStack("sulfuric", FluidContainerRegistry.BUCKET_VOLUME) != null) {
+			new TanneryLiquidReagent(FluidRegistry.getFluidStack("sulfuric", FluidContainerRegistry.BUCKET_VOLUME), 1, 0);
+		}
 		
-		
+		if (FluidRegistry.getFluidStack("juice", FluidContainerRegistry.BUCKET_VOLUME) != null) {
+			new TanneryLiquidReagent(FluidRegistry.getFluidStack("juice", FluidContainerRegistry.BUCKET_VOLUME), 2, 1);
+		}
 		
 		//Processing recipes
 	    // SMELTING RECIPES ARE TEMPORARY!!!!!!

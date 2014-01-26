@@ -3,12 +3,14 @@ package drceph.horseplay;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.minecraft.util.Icon;
 import net.minecraftforge.fluids.FluidStack;
 
 public class TanneryLiquidReagent {
 	
 	private FluidStack reagent;
 	private int processingSteps;
+	private int offset;
 	
 	private static Map<Integer, TanneryLiquidReagent> reagents = new HashMap<Integer, TanneryLiquidReagent>();
 	
@@ -20,9 +22,10 @@ public class TanneryLiquidReagent {
 		return reagents.get(liquidId);
 	}
 	
-	public TanneryLiquidReagent(FluidStack fluidStack, int steps) {
+	public TanneryLiquidReagent(FluidStack fluidStack, int steps, int offset) {
 		reagent = fluidStack;
 		processingSteps = steps;
+		this.offset = offset;
 		TanneryLiquidReagent.reagents.put(fluidStack.fluidID, this);
 	}
 	
@@ -36,6 +39,14 @@ public class TanneryLiquidReagent {
 	
 	public int getProcessingSteps() {
 		return processingSteps;
+	}
+	
+	public Icon getIcon() {
+		return reagent.getFluid().getIcon();
+	}
+	
+	public int getOffset() {
+		return offset;
 	}
 
 }

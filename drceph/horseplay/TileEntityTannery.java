@@ -17,16 +17,20 @@ public class TileEntityTannery extends TileEntity implements ISidedInventory, IF
 	
 	public static final int MAX_VOLUME = FluidContainerRegistry.BUCKET_VOLUME*4;
 	public static final int SLOT_COUNT = 2;
+	public static final int MAX_PROGRESS = 200;
 	
 	public ItemStack[] inventory;
 	public int volume;
 	public TanneryLiquidReagent reagent;
+	public int runProgress;
 	
 	public TileEntityTannery() {
 		this.inventory = new ItemStack[SLOT_COUNT];
 		volume = 0;
 		reagent = null;
+		runProgress = 0;
 	}
+	
 	
 	//sided inventory methods
 	@Override
@@ -82,19 +86,16 @@ public class TileEntityTannery extends TileEntity implements ISidedInventory, IF
 
 	@Override
 	public String getInvName() {
-		// TODO Auto-generated method stub
 		return "TileEntityTannery";
 	}
 
 	@Override
 	public boolean isInvNameLocalized() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public int getInventoryStackLimit() {
-		// TODO Auto-generated method stub
 		return 64;
 	}
 
@@ -165,7 +166,7 @@ public class TileEntityTannery extends TileEntity implements ISidedInventory, IF
 	public int getCapacity() {
 		return MAX_VOLUME;
 	}
-
+	
 	@Override
 	public FluidTankInfo getInfo() {
 		FluidTankInfo fti = new FluidTankInfo(getFluid(), getCapacity());
@@ -177,7 +178,7 @@ public class TileEntityTannery extends TileEntity implements ISidedInventory, IF
                 return false;
         } 
         return true;
-}
+	}
 
 	@Override
 	public int fill(FluidStack resource, boolean doFill) {
@@ -214,7 +215,10 @@ public class TileEntityTannery extends TileEntity implements ISidedInventory, IF
 		return null;
 	}
 	
-	
+	@Override
+	public void updateEntity() {
+		
+	}
 	
 	@Override
 	public void readFromNBT(NBTTagCompound tagCompound) {
@@ -233,6 +237,7 @@ public class TileEntityTannery extends TileEntity implements ISidedInventory, IF
         }
         setCurrentReagent(tagCompound.getInteger("fluidId"));
         volume = tagCompound.getInteger("fluidAmount");
+        runProgress = tagCompound.getInteger("progress");
 	}
 	
 	public void setCurrentReagent(int fluidId) {
@@ -260,13 +265,20 @@ public class TileEntityTannery extends TileEntity implements ISidedInventory, IF
         }
 
         tagCompound.setTag("Inventory", itemList);
-        int fluidId = reagent==null?-1:reagent.getReagentId();
+        int fluidId = reagent==null?0:reagent.getReagentId();
         tagCompound.setInteger("fluidId", fluidId);
         tagCompound.setInteger("fluidAmount", volume);
+        tagCompound.setInteger("progress", runProgress);
         
 	}
 	
-	
+	public int getCurrentFluidId() {
+		if (reagent != null) {
+			return reagent.getReagentId();
+		} else {
+			return 0;
+		}
+	}
 
 
 }
