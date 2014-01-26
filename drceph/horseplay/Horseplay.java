@@ -191,6 +191,7 @@ public class Horseplay {
 		
 		//Add tanned leather items
 		proxy.registerRenderers();
+		NetworkRegistry.instance().registerGuiHandler(this, proxy);
 	}
 	
 

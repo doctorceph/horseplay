@@ -15,12 +15,12 @@ import net.minecraftforge.fluids.IFluidTank;
 
 public class TileEntityTannery extends TileEntity implements ISidedInventory, IFluidTank {
 	
-	public static final int MAX_VOLUME = FluidContainerRegistry.BUCKET_VOLUME*2;
+	public static final int MAX_VOLUME = FluidContainerRegistry.BUCKET_VOLUME*4;
 	public static final int SLOT_COUNT = 2;
 	
-	private ItemStack[] inventory;
-	private int volume;
-	private TanneryLiquidReagent reagent;
+	public ItemStack[] inventory;
+	public int volume;
+	public TanneryLiquidReagent reagent;
 	
 	public TileEntityTannery() {
 		this.inventory = new ItemStack[SLOT_COUNT];
@@ -28,8 +28,6 @@ public class TileEntityTannery extends TileEntity implements ISidedInventory, IF
 		reagent = null;
 	}
 	
-
-
 	//sided inventory methods
 	@Override
 	public int getSizeInventory() {
@@ -173,6 +171,13 @@ public class TileEntityTannery extends TileEntity implements ISidedInventory, IF
 		FluidTankInfo fti = new FluidTankInfo(getFluid(), getCapacity());
 		return null;
 	}
+	
+	private boolean isCurrentReagent(FluidStack resource) {
+        if (reagent == null || reagent.getReagentId() != resource.fluidID) {
+                return false;
+        } 
+        return true;
+}
 
 	@Override
 	public int fill(FluidStack resource, boolean doFill) {
@@ -181,11 +186,11 @@ public class TileEntityTannery extends TileEntity implements ISidedInventory, IF
 			setCurrentReagent(resource.fluidID);
 		}
 		
-		if (reagent.getReagentId() != resource.fluidID) {
-			return 0;
-		}
+		 if (!isCurrentReagent(resource)) {
+             return 0;
+		 }
 		
-		int payload = resource.amount;
+		 int payload = resource.amount;
 		
 		if (volume+payload <= MAX_VOLUME) {
 			if (doFill) {
@@ -230,7 +235,7 @@ public class TileEntityTannery extends TileEntity implements ISidedInventory, IF
         volume = tagCompound.getInteger("fluidAmount");
 	}
 	
-	private void setCurrentReagent(int fluidId) {
+	public void setCurrentReagent(int fluidId) {
 		this.reagent = TanneryLiquidReagent.getReagentById(fluidId);
 	}
 
@@ -257,9 +262,11 @@ public class TileEntityTannery extends TileEntity implements ISidedInventory, IF
         tagCompound.setTag("Inventory", itemList);
         int fluidId = reagent==null?-1:reagent.getReagentId();
         tagCompound.setInteger("fluidId", fluidId);
-        tagCompound.setInteger("amount", volume);
+        tagCompound.setInteger("fluidAmount", volume);
         
 	}
+	
+	
 
 
 }

@@ -7,6 +7,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockContainer;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -25,7 +26,7 @@ import net.minecraftforge.fluids.FluidContainerRegistry.FluidContainerData;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
-public class BlockTannery extends Block implements ITileEntityProvider {
+public class BlockTannery extends BlockContainer {
 	
     @SideOnly(Side.CLIENT)
     private Icon tanneryInnerIcon;
@@ -140,6 +141,21 @@ public class BlockTannery extends Block implements ITileEntityProvider {
         this.setBlockBoundsForItemRender();
     }
     
+    private ItemStack consumeContainer(ItemStack stack) {
+    	 if (stack.stackSize == 1) {
+             if (stack.getItem().hasContainerItem()) {
+                     return stack.getItem().getContainerItemStack(stack);
+             } else {
+                     return null;
+             }
+     } else {
+             stack.splitStack(1);
+
+             return stack;
+     }
+    	
+    }
+    
     @Override
     public boolean onBlockActivated(World world, int x, int y,
     		int z, EntityPlayer player, int i, float f,
@@ -161,20 +177,26 @@ public class BlockTannery extends Block implements ITileEntityProvider {
     	if (tileEntity instanceof TileEntityTannery) {
     		TileEntityTannery tileEntityTannery = (TileEntityTannery) tileEntity;
     		
-    		boolean isWaterContainer = FluidContainerRegistry
-    							       .containsFluid(player.getCurrentEquippedItem(), 
-    							    		   		  FluidRegistry.getFluidStack("water", 1000));
-    		
-    		ItemStack item = player.getCurrentEquippedItem();
-    		
-    		System.out.println("Is filled container: "+FluidContainerRegistry.isFilledContainer(item));
-    		System.out.println(FluidContainerRegistry.getFluidForFilledItem(item).getFluid().getLocalizedName());
-    		
-    		if (isWaterContainer) System.out.println("clicked TET with WADDA!");
+    		ItemStack current = player.inventory.getCurrentItem();
+    		if (current != null) {
+    			FluidStack liquid = FluidContainerRegistry.getFluidForFilledItem(current);
+    			
+    			if (liquid != null) {
+    				System.out.println(tileEntityTannery.volume);
+    				int qty = tileEntityTannery.fill(liquid, true);
+    				if (qty != 0) {
+    					player.inventory.setInventorySlotContents(player.inventory.currentItem, consumeContainer(current));
+    				}
+    				System.out.println(tileEntityTannery.volume);
+    				return true;
+    			} else {
+    				player.openGui(Horseplay.instance, 0, world, x, y, z);
+    				return true;
+    			}
+    		}
     	}
+    	return false;
     	
-    	
-        return true;
     }
     
     @Override
@@ -195,6 +217,7 @@ public class BlockTannery extends Block implements ITileEntityProvider {
 		// TODO Auto-generated method stub
 		return new TileEntityTannery();
 	}
+	
 	
     
 }
