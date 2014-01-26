@@ -1,8 +1,10 @@
 package drceph.horseplay;
 
+import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -12,6 +14,7 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.liquids.LiquidContainerRegistry;
 
 public class TileEntityTannery extends TileEntity implements ISidedInventory, IFluidTank {
 	
@@ -215,10 +218,6 @@ public class TileEntityTannery extends TileEntity implements ISidedInventory, IF
 		return null;
 	}
 	
-	@Override
-	public void updateEntity() {
-		
-	}
 	
 	@Override
 	public void readFromNBT(NBTTagCompound tagCompound) {
@@ -279,6 +278,72 @@ public class TileEntityTannery extends TileEntity implements ISidedInventory, IF
 			return 0;
 		}
 	}
+	
+	@Override
+	public void updateEntity() {
+		boolean changed = false;
+		
+		
+		if (runProgress <= 0) {
+			if (isValidRun()) {
+				runProgress = 1;
+				changed = true;
+			}
+		} else if (runProgress > 0 && runProgress < MAX_PROGRESS) {
+			
+			//periodic validity check
+			if (runProgress%20==0) {
+				runProgress = isValidRun() ? runProgress++ : 0;
+				changed = true;
+			} else {
+				runProgress++;
+			}
+		} else if (runProgress == MAX_PROGRESS) {
+			if (isValidRun()) {
+				ItemStack inS = getStackInSlot(0);
+				ItemStack outS = getStackInSlot(1);
+				//TODO: Logic for converting to result!
+			}
+		}
 
+		if (changed) onInventoryChanged();
+		
+	}
+	
+	private boolean isValidRun() {
+		if (reagent == null) return false;
+		if (volume < FluidContainerRegistry.BUCKET_VOLUME) return false;
+		if (!isValidItemForProcessing(this.getStackInSlot(0))) return false;
+		if (!isSpaceForResults()) return false;
+		return true;
+	}
+	
+	private boolean isValidItemForProcessing(ItemStack query) {
+		if (query == null) return false;
+		if (query.itemID == Item.leather.itemID || 
+			query.itemID == Horseplay.lightTannedLeather.itemID) 
+			return true;
+		return false;
+	}
+	
+	private boolean isSpaceForResults() {
+		
+		ItemStack inS = getStackInSlot(0);
+		ItemStack outS = getStackInSlot(1);
+		
+		if (inS==null || reagent == null) return false;
+		if (outS==null) return true;
+		
+		if (outS.stackSize >= outS.getMaxStackSize()) return false;
+		
+		if (reagent.getProcessingSteps() == 1) {
+			return (outS.itemID == Horseplay.wellTannedLeather.itemID);
+		}
+		if (reagent.getProcessingSteps() == 2) {
+			if (inS.itemID == Item.leather.itemID && outS.itemID == Horseplay.lightTannedLeather.itemID) return true;
+			if (inS.itemID == Horseplay.lightTannedLeather.itemID && outS.itemID == Horseplay.wellTannedLeather.itemID) return true;
+		}
+		return false;
+	}
 
 }
