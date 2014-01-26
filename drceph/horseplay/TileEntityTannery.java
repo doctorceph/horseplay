@@ -297,7 +297,6 @@ public class TileEntityTannery extends TileEntity implements ISidedInventory, IF
 			//periodic validity check
 			if (runProgress%20==0) {
 				runProgress = isValidRun() ? runProgress+1 : 0;
-				changed = true;
 				System.out.println("RP: "+runProgress);
 			} else {
 				runProgress++;
@@ -328,8 +327,10 @@ public class TileEntityTannery extends TileEntity implements ISidedInventory, IF
 			changed = true;
 		}
 
-		if (changed) onInventoryChanged();
-		
+		if (changed) {
+			//TODO: call Block update thing
+			onInventoryChanged();
+		}
 	}
 	
 	private boolean isValidRun() {
