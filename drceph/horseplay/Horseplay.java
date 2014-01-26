@@ -6,8 +6,13 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemReed;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import cpw.mods.fml.client.registry.RenderingRegistry;
@@ -47,6 +52,8 @@ public class Horseplay {
 	private int horseProfilerId = 8947;
 	private int leatherTanneryItemId = 8948;
 	private int leatherTanneryId = 1600;
+	private int sulfuricAcidBucketId = 8949;
+	//private int sulfuricAcidId = 1601;
 	
 	//Item for access
 	public static Item lightTannedLeather;
@@ -55,6 +62,9 @@ public class Horseplay {
 	public static Item horseProfiler;
 	public static Item leatherTanneryItem;
 	public static Block leatherTannery;
+	public static Fluid sulfuricAcid;
+	public static Item sulfuricAcidBucket;
+	//public static Block sulfuricAcidBlock;
 	
 	@EventHandler // used in 1.6.2
 	//@PreInit    // used in 1.5.2
@@ -70,6 +80,7 @@ public class Horseplay {
 		reinforcedTannedLeatherId = config.getItem(Configuration.CATEGORY_ITEM, "reinforcedTannedLeather", 8946).getInt(8946);
 		horseProfilerId = config.getItem(Configuration.CATEGORY_ITEM, "horseProfiler", 8947).getInt(8947);
 		leatherTanneryId = config.getBlock(Configuration.CATEGORY_BLOCK, "leatherTannery", 1600).getInt(1600);
+		sulfuricAcidBucketId = config.getItem(Configuration.CATEGORY_ITEM, "sulfuricAcidBucket", 8949).getInt(8949);
 		leatherTanneryItemId = config.getItem(Configuration.CATEGORY_ITEM, "leatherTanneryItem", 8948).getInt(8948);
 		
 		lightTannedLeather = new ItemProcessedLeather(lightTannedLeatherId, "lightTannedLeather");
@@ -77,6 +88,7 @@ public class Horseplay {
 		reinforcedTannedLeather = new ItemProcessedLeather(reinforcedTannedLeatherId,"reinforcedTannedLeather");
 		
 		horseProfiler = new ItemHorseProfiler(horseProfilerId,"horseProfiler");
+		
 	
 		GameRegistry.registerItem(lightTannedLeather, "lightTannedLeather");
 		GameRegistry.registerItem(wellTannedLeather, "wellTannedLeather");
@@ -91,13 +103,31 @@ public class Horseplay {
 		
 		leatherTanneryItem = (new ItemReed(leatherTanneryItemId, leatherTannery)).setUnlocalizedName("leatherTannery").setCreativeTab(CreativeTabs.tabBlock).setTextureName("Horseplay:tannery");
 		GameRegistry.registerItem(leatherTanneryItem, "leatherTanneryItem");
+		
+		GameRegistry.registerTileEntity(drceph.horseplay.TileEntityTannery.class, "tileEntityTannery");
+		
+		
+		sulfuricAcid = new Fluid("sulfuric");
+		FluidRegistry.registerFluid(sulfuricAcid);
+		sulfuricAcid.setUnlocalizedName("sulfuric");
+		
+		sulfuricAcidBucket = new ItemBucketSulfuricAcid(sulfuricAcidBucketId, FluidRegistry.getFluidID("sulfuric"));
+		GameRegistry.registerItem(sulfuricAcidBucket, "sulfuricAcidBucket");
+		FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluidStack("sulfuric", FluidContainerRegistry.BUCKET_VOLUME), new ItemStack(sulfuricAcidBucket), new ItemStack(Item.bucketEmpty));
+		
+		
+	}
+	
+	@ForgeSubscribe
+	public void postStitch(TextureStitchEvent.Post event)
+	{
+	    sulfuricAcid.setIcons(BlockTannery.getTanneryIcon("sulfuricTop"), BlockTannery.getTanneryIcon("sulfuricSide"));
+		//sulfuricAcid.setIcons(Block.waterStill.getBlockTextureFromSide(0),Block.waterStill.getBlockTextureFromSide(0));
 	}
 
 	@EventHandler // used in 1.6.2
 	//@Init       // used in 1.5.2
 	public void load(FMLInitializationEvent event) {
-		
-		
 		
 		//add leather intermediaries 
 		LanguageRegistry.addName(lightTannedLeather, "Light Tanned Leather");
@@ -106,6 +136,12 @@ public class Horseplay {
 		LanguageRegistry.addName(horseProfiler, "Horse Profiler");
 		LanguageRegistry.addName(leatherTannery, "Leather Tannery");
 		LanguageRegistry.addName(leatherTanneryItem, "Leather Tannery");
+		LanguageRegistry.addName(sulfuricAcidBucket,"Sulfuric Acid Bucket");
+		
+		//Liquid Handling
+		new TanneryLiquidReagent(FluidRegistry.getFluidStack("water", FluidContainerRegistry.BUCKET_VOLUME), 1);
+		
+		
 		
 		//Processing recipes
 	    // SMELTING RECIPES ARE TEMPORARY!!!!!!
@@ -127,7 +163,7 @@ public class Horseplay {
 		if (useSteel && steelExists) {
 			GameRegistry.addRecipe(new ShapedOreRecipe(Item.saddle, true, new Object[]{
 						"xxx","xyx","z z",
-						Character.valueOf('x'),new ItemStack(reinforcedTannedLeather),
+						Character.valueOf('x'),new ItemStack(wellTannedLeather),
 						Character.valueOf('y'),new ItemStack(Block.carpet),
 						Character.valueOf('z'),"ingotSteel"}));
 			
@@ -141,7 +177,7 @@ public class Horseplay {
 		} else {
 			GameRegistry.addRecipe(new ItemStack(Item.saddle),
 					"xxx","xyx","z z",
-					'x',new ItemStack(reinforcedTannedLeather),
+					'x',new ItemStack(wellTannedLeather),
 					'y',new ItemStack(Block.carpet),
 					'z',new ItemStack(Item.ingotIron));
 			
@@ -156,10 +192,12 @@ public class Horseplay {
 		//Add tanned leather items
 		proxy.registerRenderers();
 	}
+	
 
 	@EventHandler // used in 1.6.2
 	//@PostInit   // used in 1.5.2
 	public void postInit(FMLPostInitializationEvent event) {
 		// Stub Method
+		MinecraftForge.EVENT_BUS.register(this);
 	}
 }

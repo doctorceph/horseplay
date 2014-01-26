@@ -7,17 +7,25 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
+import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Icon;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidContainerRegistry.FluidContainerData;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 
-public class BlockTannery extends Block {
+public class BlockTannery extends Block implements ITileEntityProvider {
 	
     @SideOnly(Side.CLIENT)
     private Icon tanneryInnerIcon;
@@ -25,6 +33,10 @@ public class BlockTannery extends Block {
     private Icon tanneryTopIcon;
     @SideOnly(Side.CLIENT)
     private Icon tanneryBottomIcon;
+    @SideOnly(Side.CLIENT)
+    private Icon sulfuricAcidTopIcon;
+    @SideOnly(Side.CLIENT)
+    private Icon sulfuricAcidSideIcon;
     
     private int blockRenderId;
 
@@ -42,8 +54,7 @@ public class BlockTannery extends Block {
 	
 	@Override
 	public TileEntity createTileEntity(World world, int metadata) {
-		// TODO Auto-generated method stub
-		return new TileEntityTannery();
+		return createNewTileEntity(world);
 	}
 	
 	
@@ -61,6 +72,8 @@ public class BlockTannery extends Block {
         this.tanneryTopIcon = par1IconRegister.registerIcon("Horseplay:tannery_top");
         this.tanneryBottomIcon = par1IconRegister.registerIcon("Horseplay:tannery_bottom");
         this.blockIcon = par1IconRegister.registerIcon("Horseplay:tannery_side");
+        this.sulfuricAcidTopIcon = par1IconRegister.registerIcon("Horseplay:sulfuric_still");
+        this.sulfuricAcidSideIcon = par1IconRegister.registerIcon("Horseplay:sulfuric_flow");
     }
     
     @SideOnly(Side.CLIENT)
@@ -100,7 +113,11 @@ public class BlockTannery extends Block {
     public static Icon getTanneryIcon(String par0Str)
     {
     	BlockTannery blockTannery = (BlockTannery)(GameRegistry.findBlock("drceph.horseplay", "leatherTannery"));
-        return par0Str.equals("inner") ? blockTannery.tanneryInnerIcon : (par0Str.equals("bottom") ? blockTannery.tanneryBottomIcon : null);
+        if (par0Str.equals("inner")) return blockTannery.tanneryInnerIcon; 
+        if (par0Str.equals("bottom")) return blockTannery.tanneryBottomIcon;
+        if (par0Str.equals("sulfuricTop")) return blockTannery.sulfuricAcidTopIcon;
+        if (par0Str.equals("sulfuricSide")) return blockTannery.sulfuricAcidSideIcon;
+        return null;
     }
     
     /**
@@ -124,6 +141,42 @@ public class BlockTannery extends Block {
     }
     
     @Override
+    public boolean onBlockActivated(World world, int x, int y,
+    		int z, EntityPlayer player, int i, float f,
+    		float g, float t) {
+    	
+    	TileEntity tileEntity = world.getBlockTileEntity(x,y,z);
+    	
+    	if (tileEntity == null || player.isSneaking()) {
+    		return false;
+    	}
+    	
+    	if (world.isRemote) {
+    		return true;
+    	}
+    	
+    	System.out.println("drumroll....");
+
+    	
+    	if (tileEntity instanceof TileEntityTannery) {
+    		TileEntityTannery tileEntityTannery = (TileEntityTannery) tileEntity;
+    		
+    		boolean isWaterContainer = FluidContainerRegistry
+    							       .containsFluid(player.getCurrentEquippedItem(), 
+    							    		   		  FluidRegistry.getFluidStack("water", 1000));
+    		
+    		ItemStack item = player.getCurrentEquippedItem();
+    		
+    		System.out.println("Is filled container: "+FluidContainerRegistry.isFilledContainer(item));
+    		
+    		if (isWaterContainer) System.out.println("clicked TET with WADDA!");
+    	}
+    	
+    	
+        return true;
+    }
+    
+    @Override
     public int getRenderType() {
     	return this.blockRenderId;
     }
@@ -135,6 +188,12 @@ public class BlockTannery extends Block {
     {
         return GameRegistry.findItem("drceph.horseplay", "leatherTanneryItem").itemID;
     }
+
+	@Override
+	public TileEntity createNewTileEntity(World world) {
+		// TODO Auto-generated method stub
+		return new TileEntityTannery();
+	}
 	
     
 }

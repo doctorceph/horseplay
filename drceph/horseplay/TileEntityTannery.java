@@ -101,12 +101,16 @@ public class TileEntityTannery extends TileEntity implements ISidedInventory, IF
 	}
 
 	@Override
-	public boolean isUseableByPlayer(EntityPlayer entityplayer) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	
-	
+    public boolean isUseableByPlayer(EntityPlayer entityPlayer) {
+            if (worldObj == null) {
+                    return true;
+            }
+            if (worldObj.getBlockTileEntity(xCoord, yCoord, zCoord) != this) {
+                    return false;
+            }
+            return entityPlayer.getDistanceSq((double) xCoord + 0.5D,
+                            (double) yCoord + 0.5D, (double) zCoord + 0.5D) <= 64D;
+    }
 
 	@Override
 	public void openChest() {
