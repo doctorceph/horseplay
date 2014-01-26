@@ -1,5 +1,6 @@
 package drceph.horseplay.client;
 
+import cpw.mods.fml.client.registry.ClientRegistry;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -11,7 +12,7 @@ public class ClientProxy extends CommonProxy {
 
 	@Override
     public void registerRenderers() {
-            // This is for rendering entities and so forth later on
+		//ClientRegistry.bindTileEntitySpecialRenderer(drceph.horseplay.TileEntityTannery.class, new HorseplayBlockRenderer());
     }
 	
 	@Override

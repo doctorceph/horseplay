@@ -20,8 +20,8 @@ public class TileEntityTannery extends TileEntity implements ISidedInventory, IF
 	
 	public static final int MAX_VOLUME = FluidContainerRegistry.BUCKET_VOLUME*4;
 	public static final int SLOT_COUNT = 2;
-	public static final int MAX_PROGRESS = 200;
-	
+	//public static final int MAX_PROGRESS = 100; //DEBUGGY
+	public static final int MAX_PROGRESS = 12000;
 	public ItemStack[] inventory;
 	public int volume;
 	public TanneryLiquidReagent reagent;
@@ -283,27 +283,49 @@ public class TileEntityTannery extends TileEntity implements ISidedInventory, IF
 	public void updateEntity() {
 		boolean changed = false;
 		
-		
+		//INITIATE PROCESS
 		if (runProgress <= 0) {
 			if (isValidRun()) {
 				runProgress = 1;
 				changed = true;
 			}
+			
+		//RUNNING PROCESS
 		} else if (runProgress > 0 && runProgress < MAX_PROGRESS) {
+			
 			
 			//periodic validity check
 			if (runProgress%20==0) {
-				runProgress = isValidRun() ? runProgress++ : 0;
+				runProgress = isValidRun() ? runProgress+1 : 0;
 				changed = true;
+				System.out.println("RP: "+runProgress);
 			} else {
 				runProgress++;
 			}
-		} else if (runProgress == MAX_PROGRESS) {
+			
+		//COMPLETING PROCESS
+		} else if (runProgress >= MAX_PROGRESS) {
 			if (isValidRun()) {
-				ItemStack inS = getStackInSlot(0);
+				FluidStack reagentStack = reagent!=null?reagent.getReagent():null;
+				//result
 				ItemStack outS = getStackInSlot(1);
-				//TODO: Logic for converting to result!
+				ItemStack recipeOut = TanneryRecipe.getOutput(reagentStack, getStackInSlot(0));
+				if (outS == null) {
+					setInventorySlotContents(1, recipeOut.copy());
+				} else {
+					outS.stackSize++;
+				}
+				
+				//consume liquid
+				volume = Math.max(0, volume-TanneryRecipe.getVolumeConsumption(reagentStack, getStackInSlot(0)));
+				
+				//consume item
+				decrStackSize(0, 1);
+				
+				
 			}
+			runProgress = 0;
+			changed = true;
 		}
 
 		if (changed) onInventoryChanged();
@@ -312,36 +334,17 @@ public class TileEntityTannery extends TileEntity implements ISidedInventory, IF
 	
 	private boolean isValidRun() {
 		if (reagent == null) return false;
-		if (volume < FluidContainerRegistry.BUCKET_VOLUME) return false;
-		if (!isValidItemForProcessing(this.getStackInSlot(0))) return false;
-		if (!isSpaceForResults()) return false;
-		return true;
+		if ( ! TanneryRecipe.isValidRecipe(reagent.getReagent(),volume, getStackInSlot(0)) ) return false;
+		return isSpaceForResults();
 	}
-	
-	private boolean isValidItemForProcessing(ItemStack query) {
-		if (query == null) return false;
-		if (query.itemID == Item.leather.itemID || 
-			query.itemID == Horseplay.lightTannedLeather.itemID) 
-			return true;
-		return false;
-	}
-	
+
 	private boolean isSpaceForResults() {
-		
-		ItemStack inS = getStackInSlot(0);
 		ItemStack outS = getStackInSlot(1);
+		if (outS == null) return true;
 		
-		if (inS==null || reagent == null) return false;
-		if (outS==null) return true;
-		
-		if (outS.stackSize >= outS.getMaxStackSize()) return false;
-		
-		if (reagent.getProcessingSteps() == 1) {
-			return (outS.itemID == Horseplay.wellTannedLeather.itemID);
-		}
-		if (reagent.getProcessingSteps() == 2) {
-			if (inS.itemID == Item.leather.itemID && outS.itemID == Horseplay.lightTannedLeather.itemID) return true;
-			if (inS.itemID == Horseplay.lightTannedLeather.itemID && outS.itemID == Horseplay.wellTannedLeather.itemID) return true;
+		ItemStack recipeOut = TanneryRecipe.getOutput(reagent!=null?reagent.getReagent():null, getStackInSlot(0));
+		if (recipeOut != null && recipeOut.itemID == outS.itemID) {
+			return outS.stackSize < 64;
 		}
 		return false;
 	}

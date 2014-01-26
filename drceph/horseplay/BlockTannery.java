@@ -171,9 +171,6 @@ public class BlockTannery extends BlockContainer {
     		return true;
     	}
     	
-    	System.out.println("drumroll....");
-
-    	
     	if (tileEntity instanceof TileEntityTannery) {
     		TileEntityTannery tileEntityTannery = (TileEntityTannery) tileEntity;
     		
@@ -193,6 +190,9 @@ public class BlockTannery extends BlockContainer {
     				player.openGui(Horseplay.instance, 0, world, x, y, z);
     				return true;
     			}
+    		} else {
+    			player.openGui(Horseplay.instance, 0, world, x, y, z);
+    			return true; //empty hands
     		}
     	}
     	return false;

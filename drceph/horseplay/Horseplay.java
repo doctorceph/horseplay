@@ -13,6 +13,7 @@ import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import cpw.mods.fml.client.registry.RenderingRegistry;
@@ -151,6 +152,13 @@ public class Horseplay {
 	    // SMELTING RECIPES ARE TEMPORARY!!!!!!
 		GameRegistry.addSmelting(Item.leather.itemID,new ItemStack(lightTannedLeather),0.0f);
 		GameRegistry.addSmelting(lightTannedLeather.itemID,new ItemStack(wellTannedLeather),0.0f);
+		TanneryRecipe.registerRecipe(
+				new FluidStack(FluidRegistry.getFluid("sulfuric"),FluidContainerRegistry.BUCKET_VOLUME), 
+				new ItemStack(Item.leather), new ItemStack(Horseplay.wellTannedLeather));
+		TanneryRecipe.registerRecipe(
+				new FluidStack(FluidRegistry.getFluid("sulfuric"),FluidContainerRegistry.BUCKET_VOLUME), 
+				new ItemStack(Horseplay.lightTannedLeather), new ItemStack(Horseplay.wellTannedLeather));
+		
 		//END TEMPORARY
 		
 		GameRegistry.addRecipe(new ItemStack(reinforcedTannedLeather),

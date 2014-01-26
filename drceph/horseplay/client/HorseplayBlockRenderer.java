@@ -7,11 +7,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraft.world.IBlockAccess;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
 import drceph.horseplay.BlockTannery;
+import drceph.horseplay.Horseplay;
+import drceph.horseplay.TileEntityTannery;
 
 public class HorseplayBlockRenderer implements ISimpleBlockRenderingHandler {
 	
@@ -33,6 +36,7 @@ public class HorseplayBlockRenderer implements ISimpleBlockRenderingHandler {
 			Block block, int modelId, RenderBlocks renderer) {
 		if (!(block instanceof BlockTannery)) return false;
 		BlockTannery blockTannery = (BlockTannery) block;
+
 		renderer.renderStandardBlock(block, x, y, z);
 		Tessellator tessellator = Tessellator.instance;
 		tessellator.setBrightness(blockTannery.getMixedBrightnessForBlock(world, x, y, z));
@@ -67,7 +71,8 @@ public class HorseplayBlockRenderer implements ISimpleBlockRenderingHandler {
         renderer.renderFaceYPos(blockTannery, (double)x, (double)((float)y - 1.0F + 0.25F), (double)z, icon1);
         renderer.renderFaceYNeg(blockTannery, (double)x, (double)((float)y + 1.0F - 0.75F), (double)z, icon1);
         
-        Icon icon2 = BlockFluid.getFluidIcon("water_still");
+        //Icon icon2 = BlockFluid.getFluidIcon("water_still");
+        Icon icon2 = Horseplay.sulfuricAcid.getStillIcon();
         renderer.renderFaceYPos(blockTannery, (double)x, (double)((float)y - 1.0F + (6.0F + 2.0F * 3.0F) / 16.0F), (double)z, icon2);
 
         float ll = 0.40F;

@@ -70,7 +70,7 @@ public class ContainerTannery extends Container {
 				crafter.sendProgressBarUpdate(this, 1, this.tileEntity.getCurrentFluidId());
 			}
 			if (this.lastProgress != this.tileEntity.runProgress) {
-				crafter.sendProgressBarUpdate(this, 0, this.tileEntity.runProgress);
+				crafter.sendProgressBarUpdate(this, 2, this.tileEntity.runProgress);
 			}
 		}
 

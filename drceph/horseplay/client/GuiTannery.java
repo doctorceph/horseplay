@@ -45,6 +45,13 @@ public class GuiTannery extends GuiContainer {
             drawTexturedModalRect(x+13, y+18, 176, 0, 16, 39);
         }
         
+        //progress
+        if (tileEntity.runProgress > 0) {
+        	double ratio = tileEntity.MAX_PROGRESS / 85.0;
+        	int scaled_progress = (int) Math.round(tileEntity.runProgress / ratio);
+        	
+        	drawTexturedModalRect(x+58, y+42, 0, 167, scaled_progress, 15);
+        }
 	}
 	
 	 
