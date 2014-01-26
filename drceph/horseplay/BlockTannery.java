@@ -214,6 +214,23 @@ public class BlockTannery extends BlockContainer {
     {
         return GameRegistry.findItem("drceph.horseplay", "leatherTanneryItem").itemID;
     }
+    
+    public static void updateBlockState(int progress, TanneryLiquidReagent tlr, World world, int x, int y, int z) {
+        int state = 0;
+    	if (progress <= 0) {
+    		if (tlr != null) {
+    			if ((FluidRegistry.getFluidName(tlr.getReagent())).equals("juice")) state = 2;
+    			else state = 1;
+    		}
+    	} else {
+    		if (tlr != null) {
+    			if ((FluidRegistry.getFluidName(tlr.getReagent())).equals("juice")) state = 4;
+    			else state = 3;
+    		}
+    	}
+    	
+        world.setBlockMetadataWithNotify(x, y, z, state, 1);
+}
 
 @Override
 public void breakBlock(World par1World, int par2, int par3, int par4,
