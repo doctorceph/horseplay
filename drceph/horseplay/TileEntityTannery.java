@@ -9,14 +9,17 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.liquids.LiquidContainerRegistry;
 
-public class TileEntityTannery extends TileEntity implements ISidedInventory, IFluidTank {
+public class TileEntityTannery extends TileEntity implements ISidedInventory, IFluidTank, IFluidHandler {
 	
 	public static final int MAX_VOLUME = FluidContainerRegistry.BUCKET_VOLUME*4;
 	public static final int SLOT_COUNT = 2;
@@ -359,6 +362,50 @@ public class TileEntityTannery extends TileEntity implements ISidedInventory, IF
 			return outS.stackSize < 64;
 		}
 		return false;
+	}
+
+
+	@Override
+	public int fill(ForgeDirection from, FluidStack resource, boolean doFill) {
+		// TODO Auto-generated method stub
+		return this.fill(resource, doFill);
+	}
+
+
+	@Override
+	public FluidStack drain(ForgeDirection from, FluidStack resource,
+			boolean doDrain) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public boolean canFill(ForgeDirection from, Fluid fluid) {
+		if (reagent==null) return true;
+		return reagent.getReagentId() == fluid.getID();
+	}
+
+
+	@Override
+	public boolean canDrain(ForgeDirection from, Fluid fluid) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+	@Override
+	public FluidTankInfo[] getTankInfo(ForgeDirection from) {
+		// TODO Auto-generated method stub
+		FluidTankInfo[] result = {getInfo()};
+		return result;
 	}
 
 }
