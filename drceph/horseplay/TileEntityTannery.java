@@ -23,8 +23,8 @@ public class TileEntityTannery extends TileEntity implements ISidedInventory, IF
 	
 	public static final int MAX_VOLUME = FluidContainerRegistry.BUCKET_VOLUME*4;
 	public static final int SLOT_COUNT = 2;
-	public static final int MAX_PROGRESS = 100; //DEBUGGY
-	//public static final int MAX_PROGRESS = 12000;
+	//public static final int MAX_PROGRESS = 100; //DEBUGGY
+	public static final int MAX_PROGRESS = 14400;
 	public ItemStack[] inventory;
 	public int volume;
 	public TanneryLiquidReagent reagent;
