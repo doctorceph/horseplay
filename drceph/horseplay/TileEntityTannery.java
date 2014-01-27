@@ -23,8 +23,8 @@ public class TileEntityTannery extends TileEntity implements ISidedInventory, IF
 	
 	public static final int MAX_VOLUME = FluidContainerRegistry.BUCKET_VOLUME*4;
 	public static final int SLOT_COUNT = 2;
-	//public static final int MAX_PROGRESS = 100; //DEBUGGY
-	public static final int MAX_PROGRESS = 12000;
+	public static final int MAX_PROGRESS = 100; //DEBUGGY
+	//public static final int MAX_PROGRESS = 12000;
 	public ItemStack[] inventory;
 	public int volume;
 	public TanneryLiquidReagent reagent;
@@ -129,8 +129,7 @@ public class TileEntityTannery extends TileEntity implements ISidedInventory, IF
 
 	@Override
 	public boolean isItemValidForSlot(int i, ItemStack itemstack) {
-		// TODO LIMIT TO LEATHER
-		return false;
+		return (i==0 && TanneryRecipe.isValidInput(itemstack));
 	}
 
 	@Override
@@ -142,13 +141,13 @@ public class TileEntityTannery extends TileEntity implements ISidedInventory, IF
 	//Insert any side, only into slot[0]
 	@Override
 	public boolean canInsertItem(int i, ItemStack itemstack, int j) {
-		return i==0 ? true : false;
+		return isItemValidForSlot(i,itemstack);
 	}
 
 	//extract any side, only from slot[1]
 	@Override
 	public boolean canExtractItem(int i, ItemStack itemstack, int j) {
-		return i==1 ? true : false;
+		return i==1;
 	}
 	
 	
@@ -326,6 +325,7 @@ public class TileEntityTannery extends TileEntity implements ISidedInventory, IF
 				
 				//consume liquid
 				volume = Math.max(0, volume-TanneryRecipe.getVolumeConsumption(reagentStack, getStackInSlot(0)));
+				if (volume==0) reagent = null;
 				
 				//consume item
 				decrStackSize(0, 1);

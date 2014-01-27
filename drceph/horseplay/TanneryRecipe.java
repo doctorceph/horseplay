@@ -25,6 +25,14 @@ public static List<TanneryRecipe> recipeRegister = new LinkedList<TanneryRecipe>
 		return null;
 	}
 	
+	public static boolean isValidInput(ItemStack input) {
+		if (input == null) return false;
+		for (TanneryRecipe recipe : recipeRegister) {
+			if (input.itemID == recipe.getInput().itemID) return true;
+		}
+		return false;
+	}
+	
 	public static boolean isValidRecipe(FluidStack reagent, ItemStack input) {
 		if (reagent == null || input == null) return false;
 		for (TanneryRecipe recipe : recipeRegister) {
