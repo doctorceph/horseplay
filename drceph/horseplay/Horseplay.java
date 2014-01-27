@@ -16,6 +16,7 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
+import net.minecraftforge.oredict.ShapelessOreRecipe;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler; // used in 1.6.2
@@ -44,9 +45,12 @@ public class Horseplay {
 	// Says where the client and server 'proxy' code is loaded. 1600 for block
 	@SidedProxy(clientSide="drceph.horseplay.client.ClientProxy", serverSide="drceph.horseplay.CommonProxy")
 	public static CommonProxy proxy;
+	
+	public static CraftingHandler craftHandler = new CraftingHandler();
 
 	//VARIABLES
 	private boolean useSteel = true;
+	private boolean useDust = true;
 	private int lightTannedLeatherId = 8944;
 	private int wellTannedLeatherId = 8945;
 	private int reinforcedTannedLeatherId = 8946;
@@ -75,6 +79,7 @@ public class Horseplay {
 		config.load();
 		
 		useSteel = config.get(Configuration.CATEGORY_GENERAL,"use_ingotSteel",true).getBoolean(true);
+		useDust = config.get(Configuration.CATEGORY_GENERAL,"use_dustForSulfuric",true).getBoolean(true);
 		
 		lightTannedLeatherId = config.getItem(Configuration.CATEGORY_ITEM, "lightTannedLeather", 8944).getInt(8944);
 		wellTannedLeatherId = config.getItem(Configuration.CATEGORY_ITEM, "wellTannedLeather", 8945).getInt(8945);
@@ -84,21 +89,23 @@ public class Horseplay {
 		sulfuricAcidBucketId = config.getItem(Configuration.CATEGORY_ITEM, "sulfuricAcidBucket", 8949).getInt(8949);
 		leatherTanneryItemId = config.getItem(Configuration.CATEGORY_ITEM, "leatherTanneryItem", 8948).getInt(8948);
 		
+		
+		//ITEM CREATION
 		lightTannedLeather = new ItemProcessedLeather(lightTannedLeatherId, "lightTannedLeather");
 		wellTannedLeather = new ItemProcessedLeather(wellTannedLeatherId,"wellTannedLeather");
-		reinforcedTannedLeather = new ItemProcessedLeather(reinforcedTannedLeatherId,"reinforcedTannedLeather");
-		
+		reinforcedTannedLeather = new ItemProcessedLeather(reinforcedTannedLeatherId,"reinforcedTannedLeather");//currently no use
 		horseProfiler = new ItemHorseProfiler(horseProfilerId,"horseProfiler");
 		
-	
+
 		GameRegistry.registerItem(lightTannedLeather, "lightTannedLeather");
 		GameRegistry.registerItem(wellTannedLeather, "wellTannedLeather");
-		GameRegistry.registerItem(reinforcedTannedLeather, "reinforcedTannedLeather");
+		GameRegistry.registerItem(reinforcedTannedLeather, "reinforcedTannedLeather");//currently no use
 		GameRegistry.registerItem(horseProfiler,"horseProfiler");
 
 		HorseplayBlockRenderer hbr = new HorseplayBlockRenderer(RenderingRegistry.getNextAvailableRenderId());
 		RenderingRegistry.registerBlockHandler(hbr);
 		
+		//BLOCK CREATION
 		leatherTannery = new BlockTannery(leatherTanneryId,hbr.getRenderId());		
 		GameRegistry.registerBlock(leatherTannery, "leatherTannery");
 		
@@ -107,7 +114,7 @@ public class Horseplay {
 		
 		GameRegistry.registerTileEntity(drceph.horseplay.TileEntityTannery.class, "tileEntityTannery");
 		
-		
+		//LIQUID CREATION
 		sulfuricAcid = new Fluid("sulfuric");
 		FluidRegistry.registerFluid(sulfuricAcid);
 		sulfuricAcid.setUnlocalizedName("sulfuric");
@@ -130,7 +137,7 @@ public class Horseplay {
 	//@Init       // used in 1.5.2
 	public void load(FMLInitializationEvent event) {
 		
-		//add leather intermediaries 
+		//addnames
 		LanguageRegistry.addName(lightTannedLeather, "Light Tanned Leather");
 		LanguageRegistry.addName(wellTannedLeather, "Well Tanned Leather");
 		LanguageRegistry.addName(reinforcedTannedLeather, "Reinforced Leather");
@@ -149,9 +156,6 @@ public class Horseplay {
 		}
 		
 		//Processing recipes
-	    // SMELTING RECIPES ARE TEMPORARY!!!!!!
-		GameRegistry.addSmelting(Item.leather.itemID,new ItemStack(lightTannedLeather),0.0f);
-		GameRegistry.addSmelting(lightTannedLeather.itemID,new ItemStack(wellTannedLeather),0.0f);
 		
 		TanneryRecipe.registerRecipe(
 				new FluidStack(FluidRegistry.getFluid("sulfuric"),FluidContainerRegistry.BUCKET_VOLUME), 
@@ -168,12 +172,40 @@ public class Horseplay {
 					new FluidStack(FluidRegistry.getFluid("juice"),FluidContainerRegistry.BUCKET_VOLUME), 
 					new ItemStack(Horseplay.lightTannedLeather), new ItemStack(Horseplay.wellTannedLeather));
 		}
-		//END TEMPORARY
 		
+		/*
 		GameRegistry.addRecipe(new ItemStack(reinforcedTannedLeather),
 				"yxy","xxx","yxy",
 				'x',new ItemStack(wellTannedLeather),
-				'y', new ItemStack(Item.silk));
+				'y', new ItemStack(Item.silk));*/
+		
+		//Block recipe
+		GameRegistry.addRecipe(new ItemStack(leatherTanneryItem),
+				"zxz","zyz","zzz",
+				'x',new ItemStack(Item.stick),
+				'y',new ItemStack(Item.silk),
+				'z',new ItemStack(Block.stone));
+		
+		//Liquid recipe
+		boolean hasSulfur = false;
+		boolean hasCoal = false;
+		for (String ore : OreDictionary.getOreNames()) {
+			if (ore.equals("dustSulfur")) hasSulfur = true;
+			if (ore.equals("dustCoal")) hasCoal = true;
+		}
+		
+		boolean dustExists = hasSulfur || hasCoal;
+		
+		if (useDust && dustExists) {
+			GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(sulfuricAcidBucket), new Object[]{
+				"dustSulfur","dustCoal"}));
+		} else {
+			ItemStack gunpowder = new ItemStack(Item.gunpowder);
+			GameRegistry.addShapelessRecipe(new ItemStack(sulfuricAcidBucket),
+					gunpowder, gunpowder, 
+					Item.coal, Item.bucketWater);
+		}
+		
 		
 		//Saddle recipe, use Steel if it exists and is in config, else use iron	
 		boolean steelExists = false;
@@ -210,7 +242,8 @@ public class Horseplay {
 					'd',new ItemStack(Item.diamond));
 		}
 		
-		//Add tanned leather items
+		GameRegistry.registerCraftingHandler(craftHandler);
+		
 		proxy.registerRenderers();
 		NetworkRegistry.instance().registerGuiHandler(this, proxy);
 	}
