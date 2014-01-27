@@ -212,7 +212,7 @@ public class BlockTannery extends BlockContainer {
      */
     public int idDropped(int par1, Random par2Random, int par3)
     {
-        return GameRegistry.findItem("drceph.horseplay", "leatherTanneryItem").itemID;
+        return Horseplay.leatherTanneryItem.itemID;
     }
     
     public static void updateBlockState(int progress, TanneryLiquidReagent tlr, World world, int x, int y, int z) {
@@ -229,7 +229,7 @@ public class BlockTannery extends BlockContainer {
     		}
     	}
     	
-        world.setBlockMetadataWithNotify(x, y, z, state, 1);
+        world.setBlockMetadataWithNotify(x, y, z, state, 2);
 }
 
 @Override

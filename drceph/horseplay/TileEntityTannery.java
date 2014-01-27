@@ -172,8 +172,7 @@ public class TileEntityTannery extends TileEntity implements ISidedInventory, IF
 	
 	@Override
 	public FluidTankInfo getInfo() {
-		FluidTankInfo fti = new FluidTankInfo(getFluid(), getCapacity());
-		return null;
+		return new FluidTankInfo(getFluid(), getCapacity());
 	}
 	
 	private boolean isCurrentReagent(FluidStack resource) {
@@ -182,12 +181,14 @@ public class TileEntityTannery extends TileEntity implements ISidedInventory, IF
         } 
         return true;
 	}
+	
 
 	@Override
 	public int fill(FluidStack resource, boolean doFill) {
 		// TODO Auto-generated method stub
 		if (reagent == null && TanneryLiquidReagent.isValidReagent(resource.fluidID)) {
 			setCurrentReagent(resource.fluidID);
+			updateBlockStatus();
 		}
 		
 		 if (!isCurrentReagent(resource)) {
@@ -296,7 +297,12 @@ public class TileEntityTannery extends TileEntity implements ISidedInventory, IF
 			
 			//periodic validity check
 			if (runProgress%20==0) {
-				runProgress = isValidRun() ? runProgress+1 : 0;
+				if (isValidRun()) {
+					runProgress++;
+				} else {
+					runProgress = 0;
+					changed = true;
+				}
 				System.out.println("RP: "+runProgress);
 			} else {
 				runProgress++;
@@ -329,8 +335,13 @@ public class TileEntityTannery extends TileEntity implements ISidedInventory, IF
 
 		if (changed) {
 			//TODO: call Block update thing
+			updateBlockStatus();
 			onInventoryChanged();
 		}
+	}
+	
+	public void updateBlockStatus() {
+		BlockTannery.updateBlockState(runProgress, reagent, worldObj, xCoord, yCoord, zCoord);
 	}
 	
 	private boolean isValidRun() {

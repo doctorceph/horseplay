@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraft.world.IBlockAccess;
+import net.minecraftforge.fluids.FluidRegistry;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
 import drceph.horseplay.BlockTannery;
@@ -71,18 +72,32 @@ public class HorseplayBlockRenderer implements ISimpleBlockRenderingHandler {
         renderer.renderFaceYPos(blockTannery, (double)x, (double)((float)y - 1.0F + 0.25F), (double)z, icon1);
         renderer.renderFaceYNeg(blockTannery, (double)x, (double)((float)y + 1.0F - 0.75F), (double)z, icon1);
         
+        int meta = world.getBlockMetadata(x, y, z);
+        System.out.println(meta+" :meta");
         //Icon icon2 = BlockFluid.getFluidIcon("water_still");
-        Icon icon2 = Horseplay.sulfuricAcid.getStillIcon();
-        renderer.renderFaceYPos(blockTannery, (double)x, (double)((float)y - 1.0F + (6.0F + 2.0F * 3.0F) / 16.0F), (double)z, icon2);
-
+        
         float ll = 0.40F;
         float ww = 0.05F;
         renderer.setRenderBounds((double)(0.5F - ll), 0.94D, (double)(0.5F - ww), (double)(0.5F + ll), 0.99D, (double)(0.5F + ww));
         renderer.renderStandardBlock(Block.planks,x,y,z);
-        renderer.setRenderBounds(0.25D,0.5D,0.48D,0.29D,0.96D,0.52D);
-        renderer.renderStandardBlock(Block.cloth,x,y,z);
-        renderer.setRenderBounds(0.71D,0.5D,0.48D,0.75D,0.96D,0.52D);
-        renderer.renderStandardBlock(Block.cloth,x,y,z);
+        renderer.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
+        
+        if (meta == 1 || meta == 3) {
+        	Icon icon2 = Horseplay.sulfuricAcid.getStillIcon();
+        	renderer.renderFaceYPos(blockTannery, (double)x, (double)((float)y - 1.0F + (6.0F + 2.0F * 3.0F) / 16.0F), (double)z, icon2);
+        }
+        
+        if (meta == 2 || meta == 4) {
+        	Icon icon2 = FluidRegistry.getFluid("juice").getIcon();
+        	renderer.renderFaceYPos(blockTannery, (double)x, (double)((float)y - 1.0F + (6.0F + 2.0F * 3.0F) / 16.0F), (double)z, icon2);
+        }
+        
+        if (meta > 2) {
+        	renderer.setRenderBounds(0.25D,0.5D,0.48D,0.29D,0.96D,0.52D);
+	        renderer.renderStandardBlock(Block.cloth,x,y,z);
+	        renderer.setRenderBounds(0.71D,0.5D,0.48D,0.75D,0.96D,0.52D);
+	        renderer.renderStandardBlock(Block.cloth,x,y,z);
+        }
         renderer.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
         
 		return true;

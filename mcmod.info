@@ -14,7 +14,7 @@
     "screenshots": [],
     "parent": "",
     "requiredMods": [ "Forge" ],
-    "dependencies": [ "Railcraft" ],
+    "dependencies": [ "Railcraft", "Forestry" ],
     "dependants": [],
     "useDependencyInformation": "true"
   }]

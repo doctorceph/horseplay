@@ -140,11 +140,11 @@ public class Horseplay {
 		LanguageRegistry.addName(sulfuricAcidBucket,"Sulfuric Acid Bucket");
 		
 		//Liquid Handling
-		if (FluidRegistry.getFluidStack("sulfuric", FluidContainerRegistry.BUCKET_VOLUME) != null) {
+		if (FluidRegistry.isFluidRegistered("sulfuric")) {
 			new TanneryLiquidReagent(FluidRegistry.getFluidStack("sulfuric", FluidContainerRegistry.BUCKET_VOLUME), 1, 0);
 		}
 		
-		if (FluidRegistry.getFluidStack("juice", FluidContainerRegistry.BUCKET_VOLUME) != null) {
+		if (FluidRegistry.isFluidRegistered("juice")) {
 			new TanneryLiquidReagent(FluidRegistry.getFluidStack("juice", FluidContainerRegistry.BUCKET_VOLUME), 2, 1);
 		}
 		
@@ -152,6 +152,7 @@ public class Horseplay {
 	    // SMELTING RECIPES ARE TEMPORARY!!!!!!
 		GameRegistry.addSmelting(Item.leather.itemID,new ItemStack(lightTannedLeather),0.0f);
 		GameRegistry.addSmelting(lightTannedLeather.itemID,new ItemStack(wellTannedLeather),0.0f);
+		
 		TanneryRecipe.registerRecipe(
 				new FluidStack(FluidRegistry.getFluid("sulfuric"),FluidContainerRegistry.BUCKET_VOLUME), 
 				new ItemStack(Item.leather), new ItemStack(Horseplay.wellTannedLeather));
@@ -159,6 +160,14 @@ public class Horseplay {
 				new FluidStack(FluidRegistry.getFluid("sulfuric"),FluidContainerRegistry.BUCKET_VOLUME), 
 				new ItemStack(Horseplay.lightTannedLeather), new ItemStack(Horseplay.wellTannedLeather));
 		
+		if (FluidRegistry.isFluidRegistered("juice")) {
+			TanneryRecipe.registerRecipe(
+					new FluidStack(FluidRegistry.getFluid("juice"),FluidContainerRegistry.BUCKET_VOLUME), 
+					new ItemStack(Item.leather), new ItemStack(Horseplay.lightTannedLeather));
+			TanneryRecipe.registerRecipe(
+					new FluidStack(FluidRegistry.getFluid("juice"),FluidContainerRegistry.BUCKET_VOLUME), 
+					new ItemStack(Horseplay.lightTannedLeather), new ItemStack(Horseplay.wellTannedLeather));
+		}
 		//END TEMPORARY
 		
 		GameRegistry.addRecipe(new ItemStack(reinforcedTannedLeather),
