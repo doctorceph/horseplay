@@ -189,12 +189,12 @@ public class BlockTannery extends BlockContainer {
     			FluidStack liquid = FluidContainerRegistry.getFluidForFilledItem(current);
     			
     			if (liquid != null) {
-    				System.out.println(tileEntityTannery.volume);
+    				//System.out.println(tileEntityTannery.volume);
     				int qty = tileEntityTannery.fill(liquid, true);
     				if (qty != 0) {
     					player.inventory.setInventorySlotContents(player.inventory.currentItem, consumeContainer(current));
     				}
-    				System.out.println(tileEntityTannery.volume);
+    				//System.out.println(tileEntityTannery.volume);
     				return true;
     			} else {
     				player.openGui(Horseplay.instance, 0, world, x, y, z);

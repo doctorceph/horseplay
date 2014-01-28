@@ -73,7 +73,7 @@ public class HorseplayBlockRenderer implements ISimpleBlockRenderingHandler {
         renderer.renderFaceYNeg(blockTannery, (double)x, (double)((float)y + 1.0F - 0.75F), (double)z, icon1);
         
         int meta = world.getBlockMetadata(x, y, z);
-        System.out.println(meta+" :meta");
+        //System.out.println(meta+" :meta");
         //Icon icon2 = BlockFluid.getFluidIcon("water_still");
         
         float ll = 0.40F;

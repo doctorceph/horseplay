@@ -307,7 +307,7 @@ public class TileEntityTannery extends TileEntity implements ISidedInventory, IF
 					runProgress = 0;
 					changed = true;
 				}
-				System.out.println("RP: "+runProgress);
+				//System.out.println("RP: "+runProgress);
 			} else {
 				runProgress++;
 			}
