@@ -17,6 +17,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import cpw.mods.fml.client.registry.RenderingRegistry;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler; // used in 1.6.2
 //import cpw.mods.fml.common.Mod.PreInit;    // used in 1.5.2
@@ -38,7 +39,7 @@ import drceph.horseplay.items.ItemBucketSulfuricAcid;
 import drceph.horseplay.items.ItemHorseProfiler;
 import drceph.horseplay.items.ItemProcessedLeather;
 
-@Mod(modid="drceph.horseplay", name="Horseplay", version="0.001")
+@Mod(modid="drceph.horseplay", name="Horseplay", version="0.001",dependencies = "required-after:Railcraft;required-after:Forestry")
 @NetworkMod(clientSideRequired=true)
 public class Horseplay {
 
@@ -118,7 +119,6 @@ public class Horseplay {
 		sulfuricAcidBucket = new ItemBucketSulfuricAcid(sulfuricAcidBucketId, FluidRegistry.getFluidID("sulfuric"));
 		GameRegistry.registerItem(sulfuricAcidBucket, "sulfuricAcidBucket");
 		FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluidStack("sulfuric", FluidContainerRegistry.BUCKET_VOLUME), new ItemStack(sulfuricAcidBucket), new ItemStack(Item.bucketEmpty));
-		
 		
 	}
 	
@@ -251,6 +251,8 @@ public class Horseplay {
 		
 		proxy.registerRenderers();
 		NetworkRegistry.instance().registerGuiHandler(this, proxy);
+		
+		
 	}
 	
 	@EventHandler // used in 1.6.2
