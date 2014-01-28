@@ -13,7 +13,7 @@ public class ItemBlockTannery extends ItemBlock {
 
 	@Override
 	public CreativeTabs getCreativeTab() {
-		return CreativeTabs.tabBlock;
+		return CreativeTabs.tabDecorations;
 	}
 	
 	
