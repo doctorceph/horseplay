@@ -197,18 +197,25 @@ public class Horseplay {
 		}
 		
 		
+		
 		//Saddle recipe, use Steel if it exists and is in config, else use iron	
 		boolean steelExists = false;
 		for (String ore : OreDictionary.getOreNames()) {
 			if (ore.equals("ingotSteel")) steelExists = true;
 		}
 		
+		
+		
+		
 		if (useSteel && steelExists) {
-			GameRegistry.addRecipe(new ShapedOreRecipe(Item.saddle, true, new Object[]{
-						"xxx","xyx","z z",
-						Character.valueOf('x'),new ItemStack(wellTannedLeather),
-						Character.valueOf('y'),new ItemStack(Block.carpet),
-						Character.valueOf('z'),"ingotSteel"}));
+			for (int i = 0; i < 16; i++) {
+				ItemStack currentCarpet = new ItemStack(Block.carpet, 1, i);
+				GameRegistry.addRecipe(new ShapedOreRecipe(Item.saddle, true, new Object[]{
+							"xxx","xyx","z z",
+							Character.valueOf('x'),new ItemStack(wellTannedLeather),
+							Character.valueOf('y'),currentCarpet,
+							Character.valueOf('z'),"ingotSteel"}));
+			}
 			
 			GameRegistry.addRecipe(new ShapedOreRecipe(horseProfiler, true, new Object[]{
 					"aba","aba","cdc",
@@ -218,12 +225,14 @@ public class Horseplay {
 					Character.valueOf('d'),new ItemStack(Item.diamond)}));
 			
 		} else {
-			GameRegistry.addRecipe(new ItemStack(Item.saddle),
-					"xxx","xyx","z z",
-					'x',new ItemStack(wellTannedLeather),
-					'y',new ItemStack(Block.carpet),
-					'z',new ItemStack(Item.ingotIron));
-			
+			for (int i = 0; i < 16; i++) {
+				ItemStack currentCarpet = new ItemStack(Block.carpet, 1, i);
+				GameRegistry.addRecipe(new ItemStack(Item.saddle),
+						"xxx","xyx","z z",
+						'x',new ItemStack(wellTannedLeather),
+						'y',currentCarpet,
+						'z',new ItemStack(Item.ingotIron));
+				}
 			GameRegistry.addRecipe(new ItemStack(horseProfiler),
 					"aba","aba","cdc",
 					'a',new ItemStack(Item.ingotIron),
@@ -232,13 +241,13 @@ public class Horseplay {
 					'd',new ItemStack(Item.diamond));
 		}
 		
+		
 		GameRegistry.registerCraftingHandler(craftHandler);
 		
 		proxy.registerRenderers();
 		NetworkRegistry.instance().registerGuiHandler(this, proxy);
 	}
 	
-
 	@EventHandler // used in 1.6.2
 	//@PostInit   // used in 1.5.2
 	public void postInit(FMLPostInitializationEvent event) {
