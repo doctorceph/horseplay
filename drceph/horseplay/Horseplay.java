@@ -60,7 +60,7 @@ public class Horseplay {
 	
 	public static CraftingHandler craftHandler = new CraftingHandler();
 
-	//VARIABLES
+	//CONFIGURATION VARIABLES
 	private boolean useSteel = true;
 	private boolean useDust = true;
 	private int lightTannedLeatherId = 8944;
@@ -73,7 +73,7 @@ public class Horseplay {
 	private int sulfuricRefractoryId = 8951;
 	//private int sulfuricAcidId = 1601;
 	
-	//Item for access
+	//ADDED ITEMS AND BLOCKS
 	public static Item lightTannedLeather;
 	public static Item wellTannedLeather;
 	public static Item reinforcedTannedLeather;
@@ -81,48 +81,46 @@ public class Horseplay {
 	public static Block leatherTannery;
 	public static Fluid sulfuricAcid;
 	public static Item sulfuricAcidBucket;
-	public static Item sulfuricCan;
-	public static Item sulfuricRefractory;
-	//public static Block sulfuricAcidBlock;
 	
 	@EventHandler // used in 1.6.2
 	//@PreInit    // used in 1.5.2
 	public void preInit(FMLPreInitializationEvent event) {
 		
+		//LOAD CONFIGURATION FROM CONFIG FILE
 		Configuration config = new Configuration(event.getSuggestedConfigurationFile());
 		config.load();
 		
 		useSteel = config.get(Configuration.CATEGORY_GENERAL,"use_ingotSteel",true).getBoolean(true);
 		useDust = config.get(Configuration.CATEGORY_GENERAL,"use_dustForSulfuric",true).getBoolean(true);
-		
+		config.getI
 		lightTannedLeatherId = config.getItem(Configuration.CATEGORY_ITEM, "lightTannedLeather", 8944).getInt(8944);
 		wellTannedLeatherId = config.getItem(Configuration.CATEGORY_ITEM, "wellTannedLeather", 8945).getInt(8945);
-		reinforcedTannedLeatherId = config.getItem(Configuration.CATEGORY_ITEM, "reinforcedTannedLeather", 8946).getInt(8946);
+		reinforcedTannedLeatherId = config.getItem(Configuration.CATEGORY_ITEM, "reinforcedTannedLeather", 8946,"Currently not implemented").getInt(8946);
 		horseProfilerId = config.getItem(Configuration.CATEGORY_ITEM, "horseProfiler", 8947).getInt(8947);
 		leatherTanneryId = config.getBlock(Configuration.CATEGORY_BLOCK, "leatherTannery", 1600).getInt(1600);
 		sulfuricAcidBucketId = config.getItem(Configuration.CATEGORY_ITEM, "sulfuricAcidBucket", 8949).getInt(8949);
 		sulfuricCanId = config.getItem(Configuration.CATEGORY_ITEM, "sulfuricCan", 8950).getInt(8950);
 		sulfuricRefractoryId = config.getItem(Configuration.CATEGORY_ITEM, "sulfuricRefractory", 8951).getInt(8951);
 		
+		config.save();
+		
 		//ITEM CREATION
 		lightTannedLeather = new ItemProcessedLeather(lightTannedLeatherId, "lightTannedLeather");
 		wellTannedLeather = new ItemProcessedLeather(wellTannedLeatherId,"wellTannedLeather");
-		reinforcedTannedLeather = new ItemProcessedLeather(reinforcedTannedLeatherId,"reinforcedTannedLeather");//currently no use
+		//reinforcedTannedLeather = new ItemProcessedLeather(reinforcedTannedLeatherId,"reinforcedTannedLeather");//currently no use
 		horseProfiler = new ItemHorseProfiler(horseProfilerId,"horseProfiler");
 		
 
 		GameRegistry.registerItem(lightTannedLeather, "lightTannedLeather");
 		GameRegistry.registerItem(wellTannedLeather, "wellTannedLeather");
-		GameRegistry.registerItem(reinforcedTannedLeather, "reinforcedTannedLeather");//currently no use
+		//GameRegistry.registerItem(reinforcedTannedLeather, "reinforcedTannedLeather");//currently no use
 		GameRegistry.registerItem(horseProfiler,"horseProfiler");
 
 		HorseplayBlockRenderer hbr = new HorseplayBlockRenderer(RenderingRegistry.getNextAvailableRenderId());
 		RenderingRegistry.registerBlockHandler(hbr);
 		
 		leatherTannery = new BlockTannery(leatherTanneryId,hbr.getRenderId());
-		
 		GameRegistry.registerBlock(leatherTannery, ItemBlockTannery.class, "leatherTannery");
-		
 		GameRegistry.registerTileEntity(drceph.horseplay.blocks.TileEntityTannery.class, "tileEntityTannery");
 		
 		//LIQUID CREATION
@@ -130,12 +128,15 @@ public class Horseplay {
 		FluidRegistry.registerFluid(sulfuricAcid);
 		sulfuricAcid.setUnlocalizedName("sulfuric");
 		
+		//Container creation - see load() for Forestry container support
 		sulfuricAcidBucket = new ItemBucketSulfuricAcid(sulfuricAcidBucketId, FluidRegistry.getFluidID("sulfuric"));
 		GameRegistry.registerItem(sulfuricAcidBucket, "sulfuricAcidBucket");
 		FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluidStack("sulfuric", FluidContainerRegistry.BUCKET_VOLUME), new ItemStack(sulfuricAcidBucket), new ItemStack(Item.bucketEmpty));
 		
 	}
 	
+	//Method for setting the texture of the Sulfuric Acid fluid, which has no block. 
+	//See postInit for registration of this event.
 	@ForgeSubscribe
 	public void postStitch(TextureStitchEvent.Post event)
 	{
@@ -150,7 +151,7 @@ public class Horseplay {
 		//addnames
 		LanguageRegistry.addName(lightTannedLeather, "Light Tanned Leather");
 		LanguageRegistry.addName(wellTannedLeather, "Well Tanned Leather");
-		LanguageRegistry.addName(reinforcedTannedLeather, "Reinforced Leather");
+		//LanguageRegistry.addName(reinforcedTannedLeather, "Reinforced Leather");
 		LanguageRegistry.addName(horseProfiler, "Horse Profiler");
 		LanguageRegistry.addName(leatherTannery, "Leather Tannery");
 		LanguageRegistry.addName(sulfuricAcidBucket,"Sulfuric Acid Bucket");
@@ -221,9 +222,6 @@ public class Horseplay {
 			if (ore.equals("ingotSteel")) steelExists = true;
 		}
 		
-		
-		
-		
 		if (useSteel && steelExists) {
 			for (int i = 0; i < 16; i++) {
 				ItemStack currentCarpet = new ItemStack(Block.carpet, 1, i);
@@ -250,22 +248,22 @@ public class Horseplay {
 						'y',currentCarpet,
 						'z',new ItemStack(Item.ingotIron));
 				}
-			GameRegistry.addRecipe(new ItemStack(horseProfiler),
-					"aba","aba","cdc",
-					'a',new ItemStack(Item.ingotIron),
-					'b',new ItemStack(Block.thinGlass),
-					'c',new ItemStack(Item.redstone),
-					'd',new ItemStack(Item.diamond));
 		}
 		
+		//Profiler recipe
+		GameRegistry.addRecipe(new ItemStack(horseProfiler),
+				"aba","aba","cdc",
+				'a',new ItemStack(Item.ingotIron),
+				'b',new ItemStack(Block.thinGlass),
+				'c',new ItemStack(Item.redstone),
+				'd',new ItemStack(Item.diamond));
 		
 		GameRegistry.registerCraftingHandler(craftHandler);
 		
 		proxy.registerRenderers();
 		NetworkRegistry.instance().registerGuiHandler(this, proxy);
 
-		//Time to do capsule thingies
-		
+		//FORESTRY SUPPORT
 		Item can = null;
 		Item refractory = null;
 		Item canWater = null;
@@ -337,7 +335,7 @@ public class Horseplay {
 	@EventHandler // used in 1.6.2
 	//@PostInit   // used in 1.5.2
 	public void postInit(FMLPostInitializationEvent event) {
-		// Stub Method
+		// Register events (used for fluid texture registration event)
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 }
