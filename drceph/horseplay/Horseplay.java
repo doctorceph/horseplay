@@ -215,8 +215,6 @@ public class Horseplay {
 					Item.coal, Item.bucketWater);
 		}
 		
-		
-		
 		//Saddle recipe, use Steel if it exists and is in config, else use iron	
 		boolean steelExists = false;
 		for (String ore : OreDictionary.getOreNames()) {
@@ -270,28 +268,42 @@ public class Horseplay {
 		
 		Item can = null;
 		Item refractory = null;
+		Item canWater = null;
+		Item refractoryWater = null;
 		
 		for (FluidContainerData fcd : FluidContainerRegistry.getRegisteredFluidContainerData()) {
+			System.out.println(fcd.filledContainer.getUnlocalizedName());
 			if (can != null && refractory != null) break;
-			if ("item.canEmpty".equals(fcd.emptyContainer.getUnlocalizedName())) {
+			if ("item.waterCan".equals(fcd.filledContainer.getUnlocalizedName())) {
 				can = fcd.emptyContainer.getItem();
+				canWater = fcd.filledContainer.getItem();
 			}
-			if ("item.refractoryEmpty".equals(fcd.emptyContainer.getUnlocalizedName())) {
+			if ("item.refractoryWater".equals(fcd.filledContainer.getUnlocalizedName())) {
 				refractory = fcd.emptyContainer.getItem();
+				refractoryWater = fcd.filledContainer.getItem();
 			}
 		}
 		
 		if (can != null) {
-			registerForestryContainer(sulfuricCanId, can, "Can", 0x5AB4FF);	
+			Item canSulfuric = registerForestryContainer(sulfuricCanId, can, "Can", 0x5AB4FF);
+			if (useDust && dustExists && canSulfuric != null) {
+				GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(canSulfuric), new Object[]{
+					"dustSulfur","dustCoal",canWater}));
+			}
+			
 		}
 		if (refractory != null) {
-			registerForestryContainer(sulfuricRefractoryId, refractory, "Refractory", 0x5AB4FF);
+			Item refractorySulfuric = registerForestryContainer(sulfuricRefractoryId, refractory, "Refractory", 0x5AB4FF);
+			if (useDust && dustExists && refractorySulfuric != null) {
+				GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(refractorySulfuric), new Object[]{
+					"dustSulfur","dustCoal",refractoryWater}));
+			}
 		}
 
 	}
 	
 	//I use reflection!!
-	private void registerForestryContainer(int id, Item container, String type, int colour) {
+	private Item registerForestryContainer(int id, Item container, String type, int colour) {
 		Class containerClass = container.getClass();
 		
 		try {
@@ -306,6 +318,7 @@ public class Horseplay {
 				GameRegistry.registerItem(sulfuricContainer, type.toLowerCase()+"Sulfuric");
 				FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluidStack("sulfuric", FluidContainerRegistry.BUCKET_VOLUME), new ItemStack(sulfuricContainer), new ItemStack(container));
 				LanguageRegistry.addName(sulfuricContainer, "Sulfuric Acid "+type);
+				return sulfuricContainer;
 			}
 		} catch (NoSuchFieldException e) {
 			e.printStackTrace();
@@ -318,6 +331,7 @@ public class Horseplay {
 		} catch (InstantiationException e) {
 			e.printStackTrace();
 		}
+		return null;
 	}
 	
 	@EventHandler // used in 1.6.2
