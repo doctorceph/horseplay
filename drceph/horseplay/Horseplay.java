@@ -31,7 +31,12 @@ import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
+import drceph.horseplay.blocks.BlockTannery;
 import drceph.horseplay.client.HorseplayBlockRenderer;
+import drceph.horseplay.items.ItemBlockTannery;
+import drceph.horseplay.items.ItemBucketSulfuricAcid;
+import drceph.horseplay.items.ItemHorseProfiler;
+import drceph.horseplay.items.ItemProcessedLeather;
 
 @Mod(modid="drceph.horseplay", name="Horseplay", version="0.001")
 @NetworkMod(clientSideRequired=true)
@@ -103,7 +108,7 @@ public class Horseplay {
 		
 		GameRegistry.registerBlock(leatherTannery, ItemBlockTannery.class, "leatherTannery");
 		
-		GameRegistry.registerTileEntity(drceph.horseplay.TileEntityTannery.class, "tileEntityTannery");
+		GameRegistry.registerTileEntity(drceph.horseplay.blocks.TileEntityTannery.class, "tileEntityTannery");
 		
 		//LIQUID CREATION
 		sulfuricAcid = new Fluid("sulfuric");

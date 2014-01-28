@@ -1,6 +1,8 @@
 package drceph.horseplay;
 
 import cpw.mods.fml.common.network.IGuiHandler;
+import drceph.horseplay.blocks.ContainerTannery;
+import drceph.horseplay.blocks.TileEntityTannery;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;

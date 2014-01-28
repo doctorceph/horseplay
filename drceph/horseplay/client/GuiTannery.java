@@ -2,9 +2,9 @@ package drceph.horseplay.client;
 
 import org.lwjgl.opengl.GL11;
 
-import drceph.horseplay.ContainerTannery;
 import drceph.horseplay.TanneryLiquidReagent;
-import drceph.horseplay.TileEntityTannery;
+import drceph.horseplay.blocks.ContainerTannery;
+import drceph.horseplay.blocks.TileEntityTannery;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;

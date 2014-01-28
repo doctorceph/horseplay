@@ -5,8 +5,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import drceph.horseplay.CommonProxy;
+import drceph.horseplay.blocks.TileEntityTannery;
 import drceph.horseplay.client.GuiTannery;
-import drceph.horseplay.TileEntityTannery;
 
 public class ClientProxy extends CommonProxy {
 

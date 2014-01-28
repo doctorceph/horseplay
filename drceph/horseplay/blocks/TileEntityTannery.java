@@ -1,6 +1,8 @@
-package drceph.horseplay;
+package drceph.horseplay.blocks;
 
 import cpw.mods.fml.common.registry.GameRegistry;
+import drceph.horseplay.TanneryLiquidReagent;
+import drceph.horseplay.TanneryRecipe;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;

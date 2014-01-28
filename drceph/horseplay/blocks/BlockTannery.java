@@ -1,4 +1,4 @@
-package drceph.horseplay;
+package drceph.horseplay.blocks;
 
 import java.util.List;
 import java.util.Random;
@@ -6,6 +6,8 @@ import java.util.Random;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import drceph.horseplay.Horseplay;
+import drceph.horseplay.TanneryLiquidReagent;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.ITileEntityProvider;

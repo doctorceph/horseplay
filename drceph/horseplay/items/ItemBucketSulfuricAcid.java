@@ -1,4 +1,4 @@
-package drceph.horseplay;
+package drceph.horseplay.items;
 
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.item.Item;

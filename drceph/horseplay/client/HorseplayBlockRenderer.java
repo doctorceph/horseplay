@@ -13,9 +13,9 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.fluids.FluidRegistry;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
-import drceph.horseplay.BlockTannery;
 import drceph.horseplay.Horseplay;
-import drceph.horseplay.TileEntityTannery;
+import drceph.horseplay.blocks.BlockTannery;
+import drceph.horseplay.blocks.TileEntityTannery;
 
 public class HorseplayBlockRenderer implements ISimpleBlockRenderingHandler {
 	

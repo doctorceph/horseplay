@@ -1,4 +1,4 @@
-package drceph.horseplay;
+package drceph.horseplay.items;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;

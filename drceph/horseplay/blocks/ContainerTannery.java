@@ -1,4 +1,4 @@
-package drceph.horseplay;
+package drceph.horseplay.blocks;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

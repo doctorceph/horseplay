@@ -1,4 +1,4 @@
-package drceph.horseplay;
+package drceph.horseplay.items;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
