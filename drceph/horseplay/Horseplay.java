@@ -1,5 +1,11 @@
 package drceph.horseplay;
 
+import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
@@ -11,6 +17,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidContainerRegistry.FluidContainerData;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
@@ -62,6 +69,8 @@ public class Horseplay {
 	private int horseProfilerId = 8947;
 	private int leatherTanneryId = 1600;
 	private int sulfuricAcidBucketId = 8949;
+	private int sulfuricCanId = 8950;
+	private int sulfuricRefractoryId = 8951;
 	//private int sulfuricAcidId = 1601;
 	
 	//Item for access
@@ -72,6 +81,8 @@ public class Horseplay {
 	public static Block leatherTannery;
 	public static Fluid sulfuricAcid;
 	public static Item sulfuricAcidBucket;
+	public static Item sulfuricCan;
+	public static Item sulfuricRefractory;
 	//public static Block sulfuricAcidBlock;
 	
 	@EventHandler // used in 1.6.2
@@ -90,12 +101,15 @@ public class Horseplay {
 		horseProfilerId = config.getItem(Configuration.CATEGORY_ITEM, "horseProfiler", 8947).getInt(8947);
 		leatherTanneryId = config.getBlock(Configuration.CATEGORY_BLOCK, "leatherTannery", 1600).getInt(1600);
 		sulfuricAcidBucketId = config.getItem(Configuration.CATEGORY_ITEM, "sulfuricAcidBucket", 8949).getInt(8949);
+		sulfuricCanId = config.getItem(Configuration.CATEGORY_ITEM, "sulfuricCan", 8950).getInt(8950);
+		sulfuricRefractoryId = config.getItem(Configuration.CATEGORY_ITEM, "sulfuricRefractory", 8951).getInt(8951);
 		
 		//ITEM CREATION
 		lightTannedLeather = new ItemProcessedLeather(lightTannedLeatherId, "lightTannedLeather");
 		wellTannedLeather = new ItemProcessedLeather(wellTannedLeatherId,"wellTannedLeather");
 		reinforcedTannedLeather = new ItemProcessedLeather(reinforcedTannedLeatherId,"reinforcedTannedLeather");//currently no use
 		horseProfiler = new ItemHorseProfiler(horseProfilerId,"horseProfiler");
+		
 
 		GameRegistry.registerItem(lightTannedLeather, "lightTannedLeather");
 		GameRegistry.registerItem(wellTannedLeather, "wellTannedLeather");
@@ -251,8 +265,59 @@ public class Horseplay {
 		
 		proxy.registerRenderers();
 		NetworkRegistry.instance().registerGuiHandler(this, proxy);
+
+		//Time to do capsule thingies
 		
+		Item can = null;
+		Item refractory = null;
 		
+		for (FluidContainerData fcd : FluidContainerRegistry.getRegisteredFluidContainerData()) {
+			if (can != null && refractory != null) break;
+			if ("item.canEmpty".equals(fcd.emptyContainer.getUnlocalizedName())) {
+				can = fcd.emptyContainer.getItem();
+			}
+			if ("item.refractoryEmpty".equals(fcd.emptyContainer.getUnlocalizedName())) {
+				refractory = fcd.emptyContainer.getItem();
+			}
+		}
+		
+		if (can != null) {
+			registerForestryContainer(sulfuricCanId, can, "Can", 0x5AB4FF);	
+		}
+		if (refractory != null) {
+			registerForestryContainer(sulfuricRefractoryId, refractory, "Refractory", 0x5AB4FF);
+		}
+
+	}
+	
+	//I use reflection!!
+	private void registerForestryContainer(int id, Item container, String type, int colour) {
+		Class containerClass = container.getClass();
+		
+		try {
+			Field containerEnum = containerClass.getDeclaredField("type");
+			containerEnum.setAccessible(true);
+			System.out.println(""+containerEnum.get(container)+" "+containerEnum.getType());
+			for (Class c : containerClass.getDeclaredClasses()) {
+				Constructor constructor = containerClass.getConstructor(new Class[]{Integer.TYPE, containerEnum.getType(),Integer.TYPE});
+				Object unclassyObject = (constructor.newInstance(id,containerEnum.get(container),colour));
+				Item sulfuricContainer = container.getClass().cast(unclassyObject);
+				sulfuricContainer.setUnlocalizedName(type.toLowerCase()+"Sulfuric");
+				GameRegistry.registerItem(sulfuricContainer, type.toLowerCase()+"Sulfuric");
+				FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluidStack("sulfuric", FluidContainerRegistry.BUCKET_VOLUME), new ItemStack(sulfuricContainer), new ItemStack(container));
+				LanguageRegistry.addName(sulfuricContainer, "Sulfuric Acid "+type);
+			}
+		} catch (NoSuchFieldException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	@EventHandler // used in 1.6.2
