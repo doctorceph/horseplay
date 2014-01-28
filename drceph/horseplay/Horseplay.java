@@ -4,7 +4,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemReed;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.Configuration;
@@ -55,7 +54,6 @@ public class Horseplay {
 	private int wellTannedLeatherId = 8945;
 	private int reinforcedTannedLeatherId = 8946;
 	private int horseProfilerId = 8947;
-	private int leatherTanneryItemId = 8948;
 	private int leatherTanneryId = 1600;
 	private int sulfuricAcidBucketId = 8949;
 	//private int sulfuricAcidId = 1601;
@@ -65,7 +63,6 @@ public class Horseplay {
 	public static Item wellTannedLeather;
 	public static Item reinforcedTannedLeather;
 	public static Item horseProfiler;
-	public static Item leatherTanneryItem;
 	public static Block leatherTannery;
 	public static Fluid sulfuricAcid;
 	public static Item sulfuricAcidBucket;
@@ -87,15 +84,12 @@ public class Horseplay {
 		horseProfilerId = config.getItem(Configuration.CATEGORY_ITEM, "horseProfiler", 8947).getInt(8947);
 		leatherTanneryId = config.getBlock(Configuration.CATEGORY_BLOCK, "leatherTannery", 1600).getInt(1600);
 		sulfuricAcidBucketId = config.getItem(Configuration.CATEGORY_ITEM, "sulfuricAcidBucket", 8949).getInt(8949);
-		leatherTanneryItemId = config.getItem(Configuration.CATEGORY_ITEM, "leatherTanneryItem", 8948).getInt(8948);
-		
 		
 		//ITEM CREATION
 		lightTannedLeather = new ItemProcessedLeather(lightTannedLeatherId, "lightTannedLeather");
 		wellTannedLeather = new ItemProcessedLeather(wellTannedLeatherId,"wellTannedLeather");
 		reinforcedTannedLeather = new ItemProcessedLeather(reinforcedTannedLeatherId,"reinforcedTannedLeather");//currently no use
 		horseProfiler = new ItemHorseProfiler(horseProfilerId,"horseProfiler");
-		
 
 		GameRegistry.registerItem(lightTannedLeather, "lightTannedLeather");
 		GameRegistry.registerItem(wellTannedLeather, "wellTannedLeather");
@@ -105,12 +99,9 @@ public class Horseplay {
 		HorseplayBlockRenderer hbr = new HorseplayBlockRenderer(RenderingRegistry.getNextAvailableRenderId());
 		RenderingRegistry.registerBlockHandler(hbr);
 		
-		//BLOCK CREATION
-		leatherTannery = new BlockTannery(leatherTanneryId,hbr.getRenderId());		
-		GameRegistry.registerBlock(leatherTannery, "leatherTannery");
+		leatherTannery = new BlockTannery(leatherTanneryId,hbr.getRenderId());
 		
-		leatherTanneryItem = (new ItemReed(leatherTanneryItemId, leatherTannery)).setUnlocalizedName("leatherTannery").setCreativeTab(CreativeTabs.tabBlock).setTextureName("Horseplay:tannery");
-		GameRegistry.registerItem(leatherTanneryItem, "leatherTanneryItem");
+		GameRegistry.registerBlock(leatherTannery, ItemBlockTannery.class, "leatherTannery");
 		
 		GameRegistry.registerTileEntity(drceph.horseplay.TileEntityTannery.class, "tileEntityTannery");
 		
@@ -130,7 +121,7 @@ public class Horseplay {
 	public void postStitch(TextureStitchEvent.Post event)
 	{
 	    sulfuricAcid.setIcons(BlockTannery.getTanneryIcon("sulfuricTop"), BlockTannery.getTanneryIcon("sulfuricSide"));
-		//sulfuricAcid.setIcons(Block.waterStill.getBlockTextureFromSide(0),Block.waterStill.getBlockTextureFromSide(0));
+		
 	}
 
 	@EventHandler // used in 1.6.2
@@ -143,7 +134,6 @@ public class Horseplay {
 		LanguageRegistry.addName(reinforcedTannedLeather, "Reinforced Leather");
 		LanguageRegistry.addName(horseProfiler, "Horse Profiler");
 		LanguageRegistry.addName(leatherTannery, "Leather Tannery");
-		LanguageRegistry.addName(leatherTanneryItem, "Leather Tannery");
 		LanguageRegistry.addName(sulfuricAcidBucket,"Sulfuric Acid Bucket");
 		
 		//Liquid Handling
@@ -173,14 +163,14 @@ public class Horseplay {
 					new ItemStack(Horseplay.lightTannedLeather), new ItemStack(Horseplay.wellTannedLeather));
 		}
 		
-		/*
+		/* CURRENTLY NOT USED
 		GameRegistry.addRecipe(new ItemStack(reinforcedTannedLeather),
 				"yxy","xxx","yxy",
 				'x',new ItemStack(wellTannedLeather),
 				'y', new ItemStack(Item.silk));*/
 		
 		//Block recipe
-		GameRegistry.addRecipe(new ItemStack(leatherTanneryItem),
+		GameRegistry.addRecipe(new ItemStack(leatherTannery),
 				"zxz","zyz","zzz",
 				'x',new ItemStack(Item.stick),
 				'y',new ItemStack(Item.silk),

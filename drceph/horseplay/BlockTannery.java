@@ -41,27 +41,28 @@ public class BlockTannery extends BlockContainer {
     private Icon sulfuricAcidTopIcon;
     @SideOnly(Side.CLIENT)
     private Icon sulfuricAcidSideIcon;
+    @SideOnly(Side.CLIENT)
+    private Icon itemIcon;
     
     private int blockRenderId;
 
 	public BlockTannery(int id, int renderId) {
-		this(id, Material.iron);
+		this(id, Material.rock);
 		this.blockRenderId = renderId;
 	}
 	
 	public BlockTannery(int id, Material material) {
 		super(id, material);
-		this.setHardness(5F);
+		this.setHardness(3.5F);
 		this.setUnlocalizedName("leatherTannery");
-		this.setStepSound(Block.soundMetalFootstep);
+		this.setStepSound(Block.soundStoneFootstep);
+		setCreativeTab(CreativeTabs.tabDecorations);
 	}
 	
 	@Override
 	public TileEntity createTileEntity(World world, int metadata) {
 		return createNewTileEntity(world);
 	}
-	
-	
 	
 	
     @SideOnly(Side.CLIENT)
@@ -78,6 +79,7 @@ public class BlockTannery extends BlockContainer {
         this.blockIcon = par1IconRegister.registerIcon("Horseplay:tannery_side");
         this.sulfuricAcidTopIcon = par1IconRegister.registerIcon("Horseplay:sulfuric_still");
         this.sulfuricAcidSideIcon = par1IconRegister.registerIcon("Horseplay:sulfuric_flow");
+        //this.itemIcon = par1IconRegister.registerIcon("Horseplay:tannery_item");
     }
     
     @SideOnly(Side.CLIENT)
@@ -89,6 +91,7 @@ public class BlockTannery extends BlockContainer {
     {
         return par1 == 1 ? this.tanneryTopIcon : (par1 == 0 ? this.tanneryBottomIcon : this.blockIcon);
     }
+    
 
     public boolean renderAsNormalBlock()
     {
@@ -121,8 +124,10 @@ public class BlockTannery extends BlockContainer {
         if (par0Str.equals("bottom")) return blockTannery.tanneryBottomIcon;
         if (par0Str.equals("sulfuricTop")) return blockTannery.sulfuricAcidTopIcon;
         if (par0Str.equals("sulfuricSide")) return blockTannery.sulfuricAcidSideIcon;
+        if (par0Str.equals("itemIcon")) return blockTannery.itemIcon;
         return null;
     }
+    
     
     /**
      * Adds all intersecting collision boxes to a list. (Be sure to only add boxes to the list if they intersect the
@@ -210,10 +215,10 @@ public class BlockTannery extends BlockContainer {
     /**
      * Returns the ID of the items to drop on destruction.
      */
-    public int idDropped(int par1, Random par2Random, int par3)
-    {
-        return Horseplay.leatherTanneryItem.itemID;
-    }
+//    public int idDropped(int par1, Random par2Random, int par3)
+//    {
+//        return Horseplay.leatherTanneryItem.itemID;
+//    }
     
     public static void updateBlockState(int progress, TanneryLiquidReagent tlr, World world, int x, int y, int z) {
         int state = 0;
@@ -232,19 +237,23 @@ public class BlockTannery extends BlockContainer {
         world.setBlockMetadataWithNotify(x, y, z, state, 2);
 }
 
-@Override
-public void breakBlock(World par1World, int par2, int par3, int par4,
-		int par5, int par6) {
-	dropItems(par1World, par2, par3, par4);
-	super.breakBlock(par1World, par2, par3, par4, par5, par6);
-}
+    
+	@Override
+	public void breakBlock(World par1World, int par2, int par3, int par4,
+			int par5, int par6) {
+		dropItems(par1World, par2, par3, par4);
+		super.breakBlock(par1World, par2, par3, par4, par5, par6);
+	}
     
 	@Override
 	public TileEntity createNewTileEntity(World world) {
-		// TODO Auto-generated method stub
 		return new TileEntityTannery();
 	}
 	
+	@Override
+	public String getItemIconName() {
+		return "Horseplay:tannery_item";
+	}
 	
 	private void dropItems(World world, int x, int y, int z){
         Random rand = new Random();
