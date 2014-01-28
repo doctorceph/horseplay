@@ -193,7 +193,7 @@ public class Horseplay {
 		
 		if (useDust && dustExists) {
 			GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(sulfuricAcidBucket), new Object[]{
-				"dustSulfur","dustCoal"}));
+				"dustSulfur","dustCoal",Item.bucketWater}));
 		} else {
 			ItemStack gunpowder = new ItemStack(Item.gunpowder);
 			GameRegistry.addShapelessRecipe(new ItemStack(sulfuricAcidBucket),
