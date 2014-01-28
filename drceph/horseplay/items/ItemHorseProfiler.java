@@ -3,6 +3,7 @@ package drceph.horseplay.items;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import net.minecraft.client.entity.EntityClientPlayerMP;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -60,6 +61,7 @@ public class ItemHorseProfiler extends Item {
 			setMaxStackSize(1);
 			setUnlocalizedName(icoName);
 			setTextureName("Horseplay:"+icoName);
+			setCreativeTab(CreativeTabs.tabTools);
 	}
 	
 	@Override
