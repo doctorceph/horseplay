@@ -46,7 +46,7 @@ import drceph.horseplay.items.ItemBucketSulfuricAcid;
 import drceph.horseplay.items.ItemHorseProfiler;
 import drceph.horseplay.items.ItemProcessedLeather;
 
-@Mod(modid="drceph.horseplay", name="Horseplay", version="0.001",dependencies = "required-after:Railcraft;required-after:Forestry")
+@Mod(modid="drceph.horseplay", name="Horseplay", version="1.0",dependencies = "required-after:Railcraft;required-after:Forestry")
 @NetworkMod(clientSideRequired=true)
 public class Horseplay {
 
