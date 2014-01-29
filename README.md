@@ -12,6 +12,14 @@ Ever wondered how you can analyse the very genome of the bees, trees and butterf
 
 Horseplay is here to help you answer these burning questions that you never had until you just read them then.
 
+Key Features
+------------
+
+* Adds a balanced crafting pipeline for the creation of the vanilla Minecraft saddle
+* Adds a sugar-powered tool to profile your horses and assist in horse breeding programs
+* Additional pipelines and features if Forestry is installed
+* Compatible with most automation mods
+
 Download
 --------
 
