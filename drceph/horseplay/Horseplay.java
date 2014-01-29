@@ -92,10 +92,10 @@ public class Horseplay {
 		
 		useSteel = config.get(Configuration.CATEGORY_GENERAL,"use_ingotSteel",true).getBoolean(true);
 		useDust = config.get(Configuration.CATEGORY_GENERAL,"use_dustForSulfuric",true).getBoolean(true);
-		config.getI
+		
 		lightTannedLeatherId = config.getItem(Configuration.CATEGORY_ITEM, "lightTannedLeather", 8944).getInt(8944);
 		wellTannedLeatherId = config.getItem(Configuration.CATEGORY_ITEM, "wellTannedLeather", 8945).getInt(8945);
-		reinforcedTannedLeatherId = config.getItem(Configuration.CATEGORY_ITEM, "reinforcedTannedLeather", 8946,"Currently not implemented").getInt(8946);
+		//reinforcedTannedLeatherId = config.getItem(Configuration.CATEGORY_ITEM, "reinforcedTannedLeather", 8946).getInt(8946);
 		horseProfilerId = config.getItem(Configuration.CATEGORY_ITEM, "horseProfiler", 8947).getInt(8947);
 		leatherTanneryId = config.getBlock(Configuration.CATEGORY_BLOCK, "leatherTannery", 1600).getInt(1600);
 		sulfuricAcidBucketId = config.getItem(Configuration.CATEGORY_ITEM, "sulfuricAcidBucket", 8949).getInt(8949);
@@ -120,7 +120,9 @@ public class Horseplay {
 		RenderingRegistry.registerBlockHandler(hbr);
 		
 		leatherTannery = new BlockTannery(leatherTanneryId,hbr.getRenderId());
+		
 		GameRegistry.registerBlock(leatherTannery, ItemBlockTannery.class, "leatherTannery");
+		
 		GameRegistry.registerTileEntity(drceph.horseplay.blocks.TileEntityTannery.class, "tileEntityTannery");
 		
 		//LIQUID CREATION
