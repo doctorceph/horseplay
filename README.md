@@ -20,4 +20,4 @@ TODO: Make a download link
 Documentation
 -------------
 
-Horseplay wiki
+[Horseplay wiki](https://github.com/doctorceph/horseplay/wiki)
