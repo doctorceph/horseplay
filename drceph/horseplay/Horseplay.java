@@ -338,6 +338,7 @@ public class Horseplay {
 	//@PostInit   // used in 1.5.2
 	public void postInit(FMLPostInitializationEvent event) {
 		// Register events (used for fluid texture registration event)
-		MinecraftForge.EVENT_BUS.register(this);
+		
+		
 	}
 }
