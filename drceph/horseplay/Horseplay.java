@@ -272,7 +272,7 @@ public class Horseplay {
 		Item refractoryWater = null;
 		
 		for (FluidContainerData fcd : FluidContainerRegistry.getRegisteredFluidContainerData()) {
-			System.out.println(fcd.filledContainer.getUnlocalizedName());
+			//System.out.println(fcd.filledContainer.getUnlocalizedName());
 			if (can != null && refractory != null) break;
 			if ("item.waterCan".equals(fcd.filledContainer.getUnlocalizedName())) {
 				can = fcd.emptyContainer.getItem();
@@ -309,7 +309,7 @@ public class Horseplay {
 		try {
 			Field containerEnum = containerClass.getDeclaredField("type");
 			containerEnum.setAccessible(true);
-			System.out.println(""+containerEnum.get(container)+" "+containerEnum.getType());
+			//System.out.println(""+containerEnum.get(container)+" "+containerEnum.getType());
 			for (Class c : containerClass.getDeclaredClasses()) {
 				Constructor constructor = containerClass.getConstructor(new Class[]{Integer.TYPE, containerEnum.getType(),Integer.TYPE});
 				Object unclassyObject = (constructor.newInstance(id,containerEnum.get(container),colour));
