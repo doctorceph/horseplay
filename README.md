@@ -15,7 +15,7 @@ Horseplay is here to help you answer these burning questions that you never had 
 Download
 --------
 
-TODO: Make a download link
+[Version 1.0; Minecraft 1.6.4](https://github.com/doctorceph/horseplay/raw/master/resources/artifacts/drceph.horseplay.1.0.zip)
 
 Documentation
 -------------
